@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ultimate Data Analyst Master Guide | Cyber-Sakura Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body x-data="appData()" x-init="init()" class="relative bg-[#fdf8f3] dark:bg-black transition-colors duration-300">
+
+    <!-- Sakura Background -->
+    <div class="sakura-container" id="sakura-container"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-gray-200 dark:border-slate-700 dark:bg-slate-900/80 transition-transform duration-300 py-1" 
+         x-data="{ visible: true, lastScroll: 0, mobileMenuOpen: false }" 
+         @scroll.window="visible = window.pageYOffset < lastScroll || window.pageYOffset < 50; lastScroll = window.pageYOffset"
+         :class="visible ? 'translate-y-0' : '-translate-y-full'">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center relative min-h-[60px]">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-fan text-[#8EB69B] text-2xl animate-spin-slow"></i>
+                <span class="font-bold text-xl tracking-tight text-[#051F20] dark:text-white">Data<span class="text-[#235347]">Mastery</span></span>
+            </div>
+            
+            <!-- Desktop Search -->
+            <div class="hidden md:flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96">
+                <input type="text" x-model="search" placeholder="Search concepts, prompts, formulas..." 
+                    class="w-full pl-10 pr-4 py-2 rounded-full bg-white/50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-[#8EB69B] focus:border-transparent transition-all backdrop-blur-sm text-slate-800 dark:text-white placeholder-slate-400 shadow-sm">
+                <i class="fa-solid fa-search absolute left-3 top-2.5 text-gray-400"></i>
+            </div>
+
+            <!-- Desktop Global Toggle -->
+            <div class="hidden md:flex items-center gap-4">
+                <!-- Dark Mode Toggle -->
+                <button @click="toggleTheme()" class="p-2 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <i class="fa-solid" :class="darkMode ? 'fa-sun text-yellow-400' : 'fa-moon'"></i>
+                </button>
+
+                <div class="h-6 w-px bg-slate-300 dark:bg-slate-700"></div>
+
+                <span class="text-sm font-semibold text-slate-600 dark:text-slate-300" :class="{'text-slate-900 dark:text-white': mode === 'standard'}">Standard</span>
+                <button @click="toggleMode()" class="relative inline-flex h-8 w-14 items-center rounded-full transition-colors duration-300 focus:outline-none"
+                    :class="mode === 'ai' ? 'bg-gradient-to-r from-[#235347] to-[#163832]' : 'bg-slate-300'">
+                    <span class="inline-block h-6 w-6 transform rounded-full bg-white shadow transition duration-300 ease-in-out"
+                        :class="mode === 'ai' ? 'translate-x-7' : 'translate-x-1'">
+                        <i class="absolute inset-0 flex items-center justify-center text-xs" 
+                           :class="mode === 'ai' ? 'fa-solid fa-robot text-[#235347]' : 'fa-solid fa-table text-slate-500'"></i>
+                    </span>
+                </button>
+                <span class="text-sm font-semibold text-slate-600 dark:text-slate-300" :class="{'text-[#235347] dark:text-purple-400': mode === 'ai'}">AI Mode</span>
+            </div>
+
+            <!-- Mobile Hamburger Button -->
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors focus:outline-none">
+                <i class="fa-solid text-xl" :class="mobileMenuOpen ? 'fa-xmark' : 'fa-bars'"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenuOpen" x-collapse class="md:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-gray-200 dark:border-slate-700 absolute top-full left-0 w-full px-4 py-4 shadow-lg flex flex-col gap-4">
+            <!-- Mobile Search -->
+            <div class="relative">
+                 <input type="text" x-model="search" placeholder="Search..." 
+                    class="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-[#235347] text-slate-800 dark:text-white placeholder-slate-400">
+                 <i class="fa-solid fa-search absolute left-3 top-3 text-gray-400"></i>
+            </div>
+            
+            <!-- Mobile Toggles -->
+            <div class="flex justify-between items-center p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                 <span class="text-slate-600 dark:text-slate-300 font-medium">Dark Mode</span>
+                 <button @click="toggleTheme()" class="p-2 rounded-full text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800">
+                    <i class="fa-solid" :class="darkMode ? 'fa-sun text-yellow-400' : 'fa-moon'"></i>
+                 </button>
+            </div>
+
+            <div class="flex justify-between items-center p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                 <span class="text-slate-600 dark:text-slate-300 font-medium">AI Mode</span>
+                 <button @click="toggleMode()" class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none"
+                    :class="mode === 'ai' ? 'bg-[#235347]' : 'bg-slate-300'">
+                    <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow transition duration-300 ease-in-out"
+                        :class="mode === 'ai' ? 'translate-x-6' : 'translate-x-1'">
+                    </span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+        <div class="inline-block mb-4 px-4 py-1 rounded-full bg-[#E8F3EA] text-[#235347] text-sm font-semibold tracking-wide uppercase">
+            The Ultimate Guide
+        </div>
+        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6">
+            <span class="block text-[#051F20] dark:text-white">Data Analyst</span>
+            <span class="block text-transparent bg-clip-text bg-gradient-to-r from-[#0B2B26] via-[#235347] to-[#8EB69B]">Master Guide</span>
+        </h1>
+        <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-600 dark:text-slate-300">
+            Standard Discipline meets AI Acceleration. Master the workflow from <span class="font-semibold text-slate-800 dark:text-white">Raw Data</span> to <span class="font-semibold text-slate-800 dark:text-white">Strategic Insight</span>.
+        </p>
+        <div class="mt-10 flex justify-center gap-4">
+            <a href="#phase-1" class="px-8 py-3 rounded-lg bg-[#051F20] dark:bg-[#235347] text-white font-semibold hover:bg-[#0B2B26] dark:hover:bg-[#163832] transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">Start Learning</a>
+            <a href="#arsenal" class="px-8 py-3 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 font-semibold hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-md hover:shadow-lg">Cheatsheets</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 space-y-8 relative">
+        <div class="timeline-line"></div>
+        
+        <!-- Phase 1 -->
+        <section id="phase-1" x-show="matchesSearch('phase 1 business understanding planning')" class="relative transition-all duration-500">
+            <div class="flex flex-col items-center mb-8 relative z-10">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#235347] to-[#8EB69B] text-white flex items-center justify-center text-2xl font-bold shadow-lg border-4 border-white">1</div>
+                <h2 class="mt-4 text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Business Understanding</h2>
+            </div>
+
+            <div class="glass dark:bg-slate-800/50 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden border border-white/50" 
+                 x-data="{ activeTab: 'standard' }" 
+                 @mode-change.window="activeTab = $event.detail">
+                
+                <div class="flex border-b border-gray-200 dark:border-slate-700">
+                    <button @click="activeTab = 'standard'" class="flex-1 py-4 text-center font-semibold transition-colors"
+                        :class="activeTab === 'standard' ? 'bg-[#E8F3EA] dark:bg-slate-700 text-[#051F20] dark:text-white border-b-2 border-[#235347] dark:border-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'">>
+                        <i class="fa-solid fa-briefcase mr-2"></i>Standard Path
+                    </button>
+                    <button @click="activeTab = 'ai'" class="flex-1 py-4 text-center font-semibold transition-colors"
+                        :class="activeTab === 'ai' ? 'bg-[#E8F3EA] dark:bg-purple-900/20 text-[#235347] dark:text-[#8EB69B] border-b-2 border-[#8EB69B]' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>AI Enhanced
+                    </button>
+                </div>
+
+                <div class="p-6 md:p-8 min-h-[300px]">
+                    <!-- Standard -->
+                    <div x-show="activeTab === 'standard'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <!-- Step 1.1 -->
+                            <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-6 rounded-xl border border-gray-200 shadow-sm hover:border-blue-400 transition-colors">
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-3">1.1 Stakeholder Interview</h3>
+                                <p class="text-sm text-slate-500 mb-3 italic">"Defining the Pain"</p>
+                                <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+                                    <li class="flex items-start"><i class="fa-solid fa-circle-question text-[#235347] mt-1 mr-2"></i> <strong>Who:</strong> Who is affected? (e.g., New vs Old customers)</li>
+                                    <li class="flex items-start"><i class="fa-solid fa-circle-question text-[#235347] mt-1 mr-2"></i> <strong>What:</strong> Specific problem (e.g., Sales dropped 20%).</li>
+                                    <li class="flex items-start"><i class="fa-solid fa-circle-question text-[#235347] mt-1 mr-2"></i> <strong>Why:</strong> Business impact (Revenue loss?).</li>
+                                </ul>
+                            </div>
+
+                            <!-- Step 1.2 -->
+                            <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-6 rounded-xl border border-gray-200 shadow-sm hover:border-blue-400 transition-colors">
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-3">1.2 Data Assessment</h3>
+                                <p class="text-sm text-slate-500 mb-3 italic">"The Inventory Check"</p>
+                                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                                    <ul class="space-y-1 text-sm font-mono text-slate-600 dark:text-slate-400">
+                                        <li><i class="fa-solid fa-check text-[#235347] mr-2"></i>Dates (Timeline?)</li>
+                                        <li><i class="fa-solid fa-check text-[#235347] mr-2"></i>Customer IDs (Granularity?)</li>
+                                        <li><i class="fa-solid fa-check text-[#235347] mr-2"></i>Financials (Revenue?)</li>
+                                    </ul>
+                                </div>
+                                <p class="mt-3 text-xs text-red-500 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Feasibility: Can I actually answer the question?</p>
+                            </div>
+
+                            <!-- Step 1.3 -->
+                            <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-6 rounded-xl border border-gray-200 shadow-sm hover:border-blue-400 transition-colors">
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-3">1.3 Hypotheses & KPIs</h3>
+                                <p class="text-sm text-slate-500 mb-3 italic">"The Strategy"</p>
+                                <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                                    <li class="flex items-start">
+                                        <i class="fa-solid fa-lightbulb text-[#8EB69B] mt-1 mr-2"></i>
+                                        <span><strong>Hypothesis:</strong> "Sales dropped because we stopped marketing on Instagram."</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa-solid fa-chart-line text-[#235347] mt-1 mr-2"></i>
+                                        <span><strong>KPI:</strong> YoY Revenue Growth % (The math to prove it).</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Step 1.4 -->
+                            <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-6 rounded-xl border border-gray-200 shadow-sm hover:border-blue-400 transition-colors">
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-3">1.4 Project Roadmap</h3>
+                                <p class="text-sm text-slate-500 mb-3 italic">"The Plan"</p>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-700 pb-1">
+                                        <span>&lt; 1M Rows</span>
+                                        <span class="font-bold text-green-600">Excel (Power Query)</span>
+                                    </div>
+                                    <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-700 pb-1">
+                                        <span>&gt; 1M Rows</span>
+                                        <span class="font-bold text-blue-600">SQL + BI Tool</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>Complex/ML</span>
+                                        <span class="font-bold text-yellow-600">Python (Pandas)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI -->
+                    <div x-show="activeTab === 'ai'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+                        <div class="grid gap-6">
+                            <div class="bg-gradient-to-r from-[#E8F3EA] to-white p-6 rounded-xl border border-[#8EB69B] relative group hover-bounce">
+                                <button @click="copyToClipboard($refs.p1, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2"><i class="fa-solid fa-user-tie mr-2"></i>Context Prompt</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p1">"Act as a Senior Data Analyst Manager. I have been asked to analyze [Problem, e.g., High Turnover]. What are the top 5 questions I must ask the stakeholders to clarify the requirements?"</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-[#E8F3EA] to-white p-6 rounded-xl border border-[#8EB69B] relative group hover-bounce">
+                                <button @click="copyToClipboard($refs.p2, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2"><i class="fa-solid fa-magnifying-glass mr-2"></i>Discovery Prompt</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p2">"I have a dataset with columns: [Paste Headers]. What specific business insights, trends, or patterns can I generate? List 10 potential analysis ideas."</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-[#E8F3EA] to-white p-6 rounded-xl border border-[#8EB69B] relative group hover-bounce">
+                                <button @click="copyToClipboard($refs.p1_3, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2"><i class="fa-solid fa-flask mr-2"></i>Hypothesis & KPI Prompt</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p1_3">"The business problem is [Problem]. List 5 logical hypotheses I should test. Also, what are the standard Industry KPIs for [Industry]? Give me the formula."</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-[#E8F3EA] to-white p-6 rounded-xl border border-[#8EB69B] relative group hover-bounce">
+                                <button @click="copyToClipboard($refs.p1_4, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2"><i class="fa-solid fa-list-check mr-2"></i>Planning Prompt</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p1_4">"Create a step-by-step project checklist for this analysis. Start from data cleaning and end with the final presentation. Estimate the time required."</p>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Full Details View -->
+                    <div x-show="showDetails" x-collapse class="bg-slate-50 border-t border-gray-200 p-6 text-sm text-slate-700 space-y-4">
+                        <h4 class="font-bold text-slate-800">Phase 1: Business Understanding & Planning (Source Content)</h4>
+                        <div class="prose prose-sm max-w-none">
+                            <p><strong>Goal:</strong> Do not touch the data until you know exactly what you are looking for.</p>
+                            <p><strong>Step 1.1: The Stakeholder Interview</strong><br>
+                            Focus: Understanding the business problem clearly.<br>
+                            Action: Schedule a kick-off meeting. Avoid vague goals like "Fix sales."<br>
+                            Ask the "5 Ws": Who, What, Where, When, Why.</p>
+                            
+                            <p><strong>Step 1.2: Data Potential Assessment</strong><br>
+                            Focus: Understanding what is possible with the data you have.<br>
+                            Action: Open your dataset (Excel/SQL) and look at the headers.<br>
+                            Check: Do I have dates? Customer IDs? Financial values?</p>
+                            
+                            <p><strong>Step 1.3: Hypotheses & KPI Definition</strong><br>
+                            Focus: Guessing the cause and choosing how to measure it.<br>
+                            Hypothesis: Make an educated guess (e.g., "Sales dropped because we stopped marketing").<br>
+                            KPI: Choose the math (e.g., YoY Revenue Growth %).</p>
+                            
+                            <p><strong>Step 1.4: Project Roadmap</strong><br>
+                            Select Tool: < 1M Rows (Excel), > 1M Rows (SQL + BI), Complex (Python).<br>
+                            Timeline: Day 1 (Cleaning), Day 2 (Analysis), Day 3 (Dashboard).</p>
+                        </div>
+                <div class="flex border-b border-gray-200 dark:border-slate-700 justify-between items-center pr-4">
+                    <div class="flex flex-1">
+                        <button @click="activeTab = 'standard'" class="flex-1 py-4 text-center font-semibold transition-colors"
+                            :class="activeTab === 'standard' ? 'bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white border-b-2 border-slate-800 dark:border-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'">
+                            <i class="fa-solid fa-database mr-2"></i>Standard Path
+                        </button>
+                        <button @click="activeTab = 'ai'" class="flex-1 py-4 text-center font-semibold transition-colors"
+                            :class="activeTab === 'ai' ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-[#8EB69B] border-b-2 border-purple-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'">
+                            <i class="fa-solid fa-code mr-2"></i>AI Enhanced
+                        </button>
+                    </div>
+                    <button @click="showDetails = !showDetails" class="text-xs font-bold px-3 py-1 rounded-full border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fa-solid fa-book-open mr-1"></i> <span x-text="showDetails ? 'Less Detail' : 'More Detail'"></span>
+                    </button>
+                </div>
+
+                <div class="p-6 md:p-8 min-h-[300px]">
+                    <div x-show="activeTab === 'standard'">
+                        <div class="space-y-6">
+                            <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-gray-200 shadow-sm">
+                                <h3 class="font-bold text-slate-800 dark:text-white mb-2"><i class="fa-solid fa-server text-teal-500 mr-2"></i>Internal Data (SQL)</h3>
+                                <div class="bg-slate-800 rounded p-3 relative group">
+                                    <button @click="copyToClipboard($refs.sql1, $event)" class="absolute top-2 right-2 text-slate-500 hover:text-white"><i class="fa-regular fa-copy"></i></button>
+                                    <code class="text-green-400 font-mono text-sm block" x-ref="sql1">SELECT * FROM transactions WHERE amount > 1000;</code>
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-gray-200 shadow-sm">
+                                    <h3 class="font-bold text-slate-800 dark:text-white mb-2">External Data</h3>
+                                    <ul class="text-sm text-slate-600 dark:text-slate-300 space-y-2">
+                                        <li>• <strong>Open Data:</strong> Kaggle, data.go.id</li>
+                                        <li>• <strong>APIs:</strong> Python `requests`</li>
+                                    </ul>
+                                </div>
+                                <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-gray-200 shadow-sm">
+                                    <h3 class="font-bold text-slate-800 dark:text-white mb-2">Manual Collection</h3>
+                                    <ul class="text-sm text-slate-600 dark:text-slate-300 space-y-2">
+                                        <li>• <strong>Surveys:</strong> Google Forms</li>
+                                        <li>• <strong>Interviews:</strong> Spreadsheets</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-gray-200 shadow-sm">
+                                <h3 class="font-bold text-slate-800 dark:text-white mb-2">2.4 Data Integration</h3>
+                                <div class="grid md:grid-cols-2 gap-4 text-sm text-slate-600 dark:text-slate-300">
+                                    <div>
+                                        <strong>Excel Power Query:</strong>
+                                        <p>Data Tab -> Get Data -> From Folder (Combine CSVs).</p>
+                                    </div>
+                                    <div>
+                                        <strong>SQL Joins:</strong>
+                                        <p>Import CSVs -> JOIN with internal tables.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div x-show="activeTab === 'ai'">
+                         <div class="grid gap-6">
+                            <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100 relative group">
+                                <button @click="copyToClipboard($refs.p3, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2">SQL Generation Prompt</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p3">"I need to extract data from a table named Orders. Write a MySQL query to select Order_ID, Date, and Total_Amount, filtering for orders placed in the last 30 days."</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100 relative group">
+                                <button @click="copyToClipboard($refs.p4, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2">Python API Script Prompt</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p4">"Write a Python script using the requests library to fetch daily exchange rate data from [API URL] and save the JSON response as a CSV file."</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100 relative group">
+                                <button @click="copyToClipboard($refs.p2_3, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2">Survey & Normalization</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p2_3">"I need to survey customers about [Topic]. Suggest 5 unbiased questions. Also, create a schema to convert interview notes into a standardized dataset."</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100 relative group">
+                                <button @click="copyToClipboard($refs.p2_4, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2">Merging Strategy</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p2_4">"I have a 'Sales' table with Customer_ID and a 'Marketing' CSV with Email_Address. How can I join these two if they don't share a common ID column?"</p>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Full Details View -->
+                    <div x-show="showDetails" x-collapse class="bg-slate-50 border-t border-gray-200 p-6 text-sm text-slate-700 space-y-4">
+                        <h4 class="font-bold text-slate-800">Phase 1: Business Understanding & Planning (Source Content)</h4>
+                        <div class="prose prose-sm max-w-none">
+                            <p><strong>Goal:</strong> Do not touch the data until you know exactly what you are looking for.</p>
+                            <p><strong>Step 1.1: The Stakeholder Interview</strong><br>
+                            Focus: Understanding the business problem clearly.<br>
+                            Action: Schedule a kick-off meeting. Avoid vague goals like "Fix sales."<br>
+                            Ask the "5 Ws": Who, What, Where, When, Why.</p>
+                            
+                            <p><strong>Step 1.2: Data Potential Assessment</strong><br>
+                            Focus: Understanding what is possible with the data you have.<br>
+                            Action: Open your dataset (Excel/SQL) and look at the headers.<br>
+                            Check: Do I have dates? Customer IDs? Financial values?</p>
+                            
+                            <p><strong>Step 1.3: Hypotheses & KPI Definition</strong><br>
+                            Focus: Guessing the cause and choosing how to measure it.<br>
+                            Hypothesis: Make an educated guess (e.g., "Sales dropped because we stopped marketing").<br>
+                            KPI: Choose the math (e.g., YoY Revenue Growth %).</p>
+                            
+                            <p><strong>Step 1.4: Project Roadmap</strong><br>
+                            Select Tool: < 1M Rows (Excel), > 1M Rows (SQL + BI), Complex (Python).<br>
+                            Timeline: Day 1 (Cleaning), Day 2 (Analysis), Day 3 (Dashboard).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 2 -->
+        <section id="phase-2" x-show="matchesSearch('phase 2 data sourcing collection')" class="relative transition-all duration-500">
+            <div class="flex flex-col items-center mb-8 relative z-10">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#163832] to-[#235347] text-white flex items-center justify-center text-2xl font-bold shadow-lg border-4 border-white">2</div>
+                <h2 class="mt-4 text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Data Sourcing</h2>
+            </div>
+
+            <div class="glass dark:bg-slate-800/50 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden border border-white/50" 
+                 x-data="{ activeTab: 'standard', showDetails: false }" 
+                 @mode-change.window="activeTab = $event.detail">
+                
+                <div class="flex border-b border-gray-200 dark:border-slate-700 justify-between items-center pr-4">
+                    <div class="flex flex-1">
+                        <button @click="activeTab = 'standard'" class="flex-1 py-4 text-center font-semibold transition-colors"
+                            :class="activeTab === 'standard' ? 'bg-[#E8F3EA] dark:bg-slate-700 text-[#051F20] dark:text-white border-b-2 border-[#235347] dark:border-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'">
+                            <i class="fa-solid fa-cloud-download-alt mr-2"></i>Standard Path
+                        </button>
+                        <button @click="activeTab = 'ai'" class="flex-1 py-4 text-center font-semibold transition-colors"
+                            :class="activeTab === 'ai' ? 'bg-[#E8F3EA] dark:bg-purple-900/20 text-[#235347] dark:text-[#8EB69B] border-b-2 border-[#8EB69B]' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'">
+                            <i class="fa-solid fa-robot mr-2"></i>AI Enhanced
+                        </button>
+                    </div>
+                    <button @click="showDetails = !showDetails" class="text-xs font-bold px-3 py-1 rounded-full border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fa-solid fa-book-open mr-1"></i> <span x-text="showDetails ? 'Less Detail' : 'More Detail'"></span>
+                    </button>
+                </div>
+
+                <div class="p-6 md:p-8 min-h-[300px]">
+                    <!-- Standard -->
+                    <div x-show="activeTab === 'standard'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4">2.1 Internal Data</h3>
+                                <div class="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700 space-y-3">
+                                    <div class="flex items-start">
+                                        <i class="fa-solid fa-database text-[#235347] mt-1 mr-2"></i>
+                                        <div>
+                                            <strong class="block text-slate-700 dark:text-slate-200">SQL Databases</strong>
+                                            <span class="text-sm text-slate-600 dark:text-slate-400">Connect via DBeaver/MySQL Workbench.</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <i class="fa-solid fa-file-export text-[#235347] mt-1 mr-2"></i>
+                                        <div>
+                                            <strong class="block text-slate-700 dark:text-slate-200">Business Systems</strong>
+                                            <span class="text-sm text-slate-600 dark:text-slate-400">Export CSVs from Salesforce, SAP, HubSpot.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4">2.2 External Data</h3>
+                                <div class="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700 space-y-3">
+                                    <div class="flex items-start">
+                                        <i class="fa-solid fa-globe text-[#235347] mt-1 mr-2"></i>
+                                        <div>
+                                            <strong class="block text-slate-700 dark:text-slate-200">Open Datasets</strong>
+                                            <span class="text-sm text-slate-600 dark:text-slate-400">Kaggle, data.go.id.</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <i class="fa-brands fa-python text-[#8EB69B] mt-1 mr-2"></i>
+                                        <div>
+                                            <strong class="block text-slate-700 dark:text-slate-200">APIs & Scraping</strong>
+                                            <span class="text-sm text-slate-600 dark:text-slate-400">Python `requests` or `BeautifulSoup`.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8 pt-8 border-t border-gray-100 dark:border-slate-700 grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4">2.3 Manual Collection</h3>
+                                <ul class="space-y-3 text-slate-600 dark:text-slate-300">
+                                    <li class="flex items-start"><i class="fa-solid fa-clipboard-question text-[#235347] mt-1 mr-2"></i> <span><strong>Surveys:</strong> Google Forms (Neutral questions).</span></li>
+                                    <li class="flex items-start"><i class="fa-solid fa-microphone text-[#235347] mt-1 mr-2"></i> <span><strong>Interviews:</strong> User feedback in spreadsheets.</span></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4">2.4 Data Integration</h3>
+                                <ul class="space-y-3 text-slate-600 dark:text-slate-300">
+                                    <li class="flex items-start"><i class="fa-solid fa-table-columns text-emerald-500 mt-1 mr-2"></i> <span><strong>Power Query:</strong> Combine CSVs from folder.</span></li>
+                                    <li class="flex items-start"><i class="fa-solid fa-link text-[#235347] mt-1 mr-2"></i> <span><strong>SQL Joins:</strong> Connect external CSVs with internal tables.</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI -->
+                    <div x-show="activeTab === 'ai'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+                        <div class="grid gap-6">
+                            <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100 relative group">
+                                <button @click="copyToClipboard($refs.p2_1, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2"><i class="fa-solid fa-database mr-2"></i>SQL Generation Prompt</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p2_1">"I need to extract data from a table named Orders. Write a MySQL query to select Order_ID, Date, and Total_Amount, filtering for orders placed in the last 30 days."</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100 relative group">
+                                <button @click="copyToClipboard($refs.p2_2, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2"><i class="fa-brands fa-python mr-2"></i>API Script Prompt</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p2_2">"Write a Python script using the requests library to fetch daily exchange rate data from [API URL] and save the JSON response as a CSV file."</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100 relative group">
+                                <button @click="copyToClipboard($refs.p2_3, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2"><i class="fa-solid fa-clipboard-question mr-2"></i>Survey Design Prompt</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p2_3">"I need to survey customers about [Topic]. Suggest 5 unbiased questions. Also, create a schema to convert interview notes into a standardized dataset."</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100 relative group">
+                                <button @click="copyToClipboard($refs.p2_4, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2"><i class="fa-solid fa-object-group mr-2"></i>Merging Strategy Prompt</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p2_4">"I have a 'Sales' table with Customer_ID and a 'Marketing' CSV with Email_Address. How can I join these two if they don't share a common ID column?"</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Full Details View -->
+                    <div x-show="showDetails" x-collapse class="bg-slate-50 border-t border-gray-200 p-6 text-sm text-slate-700 space-y-4">
+                        <h4 class="font-bold text-slate-800">Phase 2: Data Sourcing (Source Content)</h4>
+                        <div class="prose prose-sm max-w-none">
+                            <p><strong>Goal:</strong> Acquire high-quality raw materials. Your analysis is only as good as your source.</p>
+                            
+                            <p><strong>Step 2.1: Internal Data (The Foundation)</strong><br>
+                            Focus: Extracting data your company already owns (OLTP, CRM, ERP).<br>
+                            Databases (SQL): Connect via DBeaver/MySQL Workbench. Write SELECT queries.<br>
+                            Business Systems: Export CSVs from Salesforce, SAP, HubSpot.</p>
+                            
+                            <p><strong>Step 2.2: External Data (Enrichment)</strong><br>
+                            Focus: Getting data from outside (Market Trends, Public Info).<br>
+                            Open Datasets: Kaggle, data.go.id.<br>
+                            APIs: Use Python `requests` to fetch JSON.<br>
+                            Web Scraping: Use BeautifulSoup/Selenium (Check Terms of Service!).</p>
+                            
+                            <p><strong>Step 2.3: Manual Data Collection</strong><br>
+                            Focus: Creating data that doesn't exist yet.<br>
+                            Surveys: Google Forms (Ensure neutral questions).<br>
+                            Interviews: Talk to users, record feedback.</p>
+                            
+                            <p><strong>Step 2.4: Data Integration</strong><br>
+                            Focus: Bringing all sources into one place.<br>
+                            Excel Power Query: Get Data -> From Folder (Combine CSVs).<br>
+                            SQL Joins: Import CSVs -> JOIN with internal tables.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 3 -->
+        <section id="phase-3" x-show="matchesSearch('phase 3 data cleaning excel sql')" class="relative transition-all duration-500">
+            <div class="flex flex-col items-center mb-8 relative z-10">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#0B2B26] to-[#163832] text-white flex items-center justify-center text-2xl font-bold shadow-lg border-4 border-white">3</div>
+                <h2 class="mt-4 text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Data Cleaning</h2>
+            </div>
+
+            <div class="glass dark:bg-slate-800/50 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden border border-white/50 hover-bounce transition-all duration-300" 
+                 x-data="{ activeTab: 'standard', toolTab: 'excel_manual', showDetails: false }" 
+                 @mode-change.window="activeTab = $event.detail">
+                <div class="flex border-b border-gray-200 dark:border-slate-700 justify-between items-center pr-4">
+                    <div class="flex flex-1">
+                        <button @click="activeTab = 'standard'" class="flex-1 py-4 text-center font-semibold transition-colors"
+                            :class="activeTab === 'standard' ? 'bg-[#E8F3EA] dark:bg-slate-700 text-[#051F20] dark:text-white border-b-2 border-[#235347] dark:border-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'">
+                            <i class="fa-solid fa-broom mr-2"></i>Standard Path
+                        </button>
+                        <button @click="activeTab = 'ai'" class="flex-1 py-4 text-center font-semibold transition-colors"
+                            :class="activeTab === 'ai' ? 'bg-[#E8F3EA] dark:bg-purple-900/20 text-[#235347] dark:text-[#8EB69B] border-b-2 border-[#8EB69B]' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'">
+                            <i class="fa-solid fa-magic mr-2"></i>AI Enhanced
+                        </button>
+                    </div>
+                    <button @click="showDetails = !showDetails" class="text-xs font-bold px-3 py-1 rounded-full border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fa-solid fa-book-open mr-1"></i> <span x-text="showDetails ? 'Less Detail' : 'More Detail'"></span>
+                    </button>
+                </div>
+
+                <div class="p-6 md:p-8 min-h-[300px]">
+                    <div x-show="activeTab === 'standard'">
+                        <!-- Horizontal Sub-Tabs for Tools -->
+                        <div class="mb-6" x-data="{ toolTab: 'excel' }">
+                            <div class="flex gap-2 border-b border-slate-200 dark:border-slate-700 mb-6">
+                                <button @click="toolTab = 'excel'" 
+                                    class="px-6 py-3 text-sm font-semibold transition-all"
+                                    :class="toolTab === 'excel' ? 'border-b-2 border-orange-500 text-orange-600 dark:text-orange-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'">
+                                    <i class="fa-solid fa-table mr-2"></i>Excel
+                                </button>
+                                <button @click="toolTab = 'sql'" 
+                                    class="px-6 py-3 text-sm font-semibold transition-all"
+                                    :class="toolTab === 'sql' ? 'border-b-2 border-[#235347] text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'">
+                                    <i class="fa-solid fa-database mr-2"></i>SQL
+                                </button>
+                                <button @click="toolTab = 'sheets'" 
+                                    class="px-6 py-3 text-sm font-semibold transition-all"
+                                    :class="toolTab === 'sheets' ? 'border-b-2 border-[#235347] text-green-600 dark:text-green-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'">
+                                    <i class="fa-solid fa-file-csv mr-2"></i>Google Sheets
+                                </button>
+                            </div>
+
+                            <!-- Excel Tab Content -->
+                            <div x-show="toolTab === 'excel'" x-data="{ openStep: null }">
+                                <div class="space-y-3">
+                                    <div class="bg-orange-50 dark:bg-orange-900/10 p-4 rounded-lg border-l-4 border-orange-500">
+                                        <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold"><i class="fa-solid fa-lightbulb text-[#8EB69B] mr-2"></i>The 10-Step Manual Guide (< 1M Rows)</p>
+                                    </div>
+                                    
+                                    <!-- Excel Steps with Dropdowns -->
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
+                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                            <span class="text-[#8EB69B] font-bold mr-2">1.</span><strong>Save & Setup:</strong> Save Copy → Select All (Ctrl+A) → Auto-fit → Table (Ctrl+T).
+                                        </div>
+                                    </div>
+
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
+                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                            <span class="text-[#8EB69B] font-bold mr-2">2.</span><strong>Clean Text:</strong> Remove Parentheses via Find & Replace <code class="bg-slate-800 text-green-400 px-1 rounded">(*)</code>.
+                                        </div>
+                                    </div>
+
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
+                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                            <span class="text-[#8EB69B] font-bold mr-2">3.</span><strong>Standardize Case:</strong> <code class="bg-slate-800 text-blue-400 px-2 py-1 rounded">=LOWER(C2)</code> to fix capitalization.
+                                        </div>
+                                    </div>
+
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
+                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                            <span class="text-[#8EB69B] font-bold mr-2">4.</span><strong>Clean Names:</strong> <code class="bg-slate-800 text-purple-400 px-2 py-1 rounded">=PROPER(TRIM(D2))</code> for names.
+                                        </div>
+                                    </div>
+
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
+                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                            <span class="text-[#8EB69B] font-bold mr-2">5.</span><strong>Split Columns:</strong> Data Tab → Text to Columns (Delimited).
+                                        </div>
+                                    </div>
+
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
+                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                            <span class="text-[#8EB69B] font-bold mr-2">6.</span><strong>Remove Duplicates:</strong> Data Tab → Remove Duplicates.
+                                        </div>
+                                    </div>
+
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
+                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                            <span class="text-[#8EB69B] font-bold mr-2">7.</span><strong>Fill Blanks:</strong> Ctrl+G (Go To) → Special → Blanks → Type "NA" → Ctrl+Enter.
+                                        </div>
+                                    </div>
+
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
+                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                            <span class="text-[#8EB69B] font-bold mr-2">8.</span><strong>Handle Errors:</strong> <code class="bg-slate-800 text-yellow-400 px-2 py-1 rounded">=IFERROR(VLOOKUP(...), "Not Found")</code>.
+                                        </div>
+                                    </div>
+
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
+                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                            <span class="text-[#8EB69B] font-bold mr-2">9.</span><strong>Format Headers:</strong> Bold, Dark Blue Background, White Text.
+                                        </div>
+                                    </div>
+
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
+                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                            <span class="text-[#8EB69B] font-bold mr-2">10.</span><strong>Final Polish:</strong> View Tab → Uncheck Gridlines.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SQL Tab Content -->
+                            <div x-show="toolTab === 'sql'">
+                                <div class="bg-[#E8F3EA] dark:bg-blue-900/10 p-4 rounded-lg border-l-4 border-[#235347] mb-4">
+                                    <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold"><i class="fa-solid fa-database text-[#235347] mr-2"></i>Large Data Strategy (> 1M Rows)</p>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
+                                        <strong class="text-slate-700 dark:text-slate-200 block mb-2">1. Remove Duplicates (Safe Way)</strong>
+                                        <div class="bg-slate-800 text-green-400 p-3 rounded-lg font-mono text-xs shadow-inner">CREATE TABLE clean AS SELECT DISTINCT * FROM original;</div>
+                                    </div>
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
+                                        <strong class="text-slate-700 dark:text-slate-200 block mb-2">2. Handle Nulls</strong>
+                                        <div class="bg-slate-800 text-blue-400 p-3 rounded-lg font-mono text-xs shadow-inner">UPDATE clean SET col = 'Default' WHERE col IS NULL;</div>
+                                    </div>
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
+                                        <strong class="text-slate-700 dark:text-slate-200 block mb-2">3. Standardize Case</strong>
+                                        <div class="bg-slate-800 text-purple-400 p-3 rounded-lg font-mono text-xs shadow-inner">UPDATE clean SET col = UPPER(col);</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Google Sheets Tab Content -->
+                            <div x-show="toolTab === 'sheets'">
+                                <div class="bg-[#E8F3EA] dark:bg-green-900/10 p-4 rounded-lg border-l-4 border-[#235347] mb-4">
+                                    <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold"><i class="fa-solid fa-cloud text-[#235347] mr-2"></i>Cloud Smart Features</p>
+                                </div>
+                                <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                                    <li class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
+                                        <i class="fa-solid fa-check-circle text-[#235347] mr-2"></i><strong>Trim Whitespace:</strong> Data → Data cleanup → Trim whitespace.
+                                    </li>
+                                    <li class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
+                                        <i class="fa-solid fa-check-circle text-[#235347] mr-2"></i><strong>Remove Duplicates:</strong> Data → Data cleanup → Remove duplicates.
+                                    </li>
+                                    <li class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
+                                        <i class="fa-solid fa-check-circle text-[#235347] mr-2"></i><strong>Cleanup Suggestions:</strong> AI-powered error scanning.
+                                    </li>
+                                    <li class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
+                                        <i class="fa-solid fa-check-circle text-[#235347] mr-2"></i><strong>Split Text:</strong> Auto-detects separators.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div x-show="activeTab === 'ai'">
+                        <div class="grid gap-6">
+                            <div class="bg-gradient-to-r from-[#E8F3EA] to-white p-6 rounded-xl border border-[#8EB69B] relative group hover-bounce">
+                                <button @click="copyToClipboard($refs.p5, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2">Excel Formula Generator</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p5">"I have a column with messy addresses. Write an Excel formula to extract just the text before the first comma."</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-[#E8F3EA] to-white p-6 rounded-xl border border-[#8EB69B] relative group hover-bounce">
+                                <button @click="copyToClipboard($refs.p6, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2">SQL Cleaning Prompt</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p6">"Write a SQL query to find all rows where the 'Email' column is invalid (does not contain '@')."</p>
+                            </div>
+                             <div class="bg-gradient-to-r from-[#E8F3EA] to-white p-6 rounded-xl border border-[#8EB69B] relative group hover-bounce">
+                                <button @click="copyToClipboard($refs.p6_sheets, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2">Google Sheets Regex</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p6_sheets">"Write a Google Sheets REGEXMATCH formula to check if a phone number starts with '62'."</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Full Details View -->
+                    <div x-show="showDetails" x-collapse class="bg-slate-50 border-t border-gray-200 p-6 text-sm text-slate-700 space-y-4">
+                        <h4 class="font-bold text-slate-800">Phase 3: Data Cleaning (Source Content)</h4>
+                        <div class="prose prose-sm max-w-none">
+                            <p><strong>Goal:</strong> Make data accurate and consistent. "Garbage in, garbage out."</p>
+                            <p><strong>Scenario A: Microsoft Excel (The 10-Step Manual Guide)</strong><br>
+                            1. Save, Auto-fit, & Table Setup (Ctrl+T).<br>
+                            2. Remove Parentheses (Find & Replace).<br>
+                            3. Standardize Case (=LOWER).<br>
+                            4. Clean Names (=PROPER(TRIM)).<br>
+                            5. Split Columns (Text to Columns).<br>
+                            6. Remove Duplicates.<br>
+                            7. Fill Blank Cells (Go To Special -> Blanks).<br>
+                            8. Handle Formula Errors (=IFERROR).<br>
+                            9. Format Headers.<br>
+                            10. Remove Gridlines.</p>
+                            
+                            <p><strong>Scenario B: MySQL (Large Data Strategy)</strong><br>
+                            1. Remove Duplicates: CREATE TABLE clean AS SELECT DISTINCT * FROM original;<br>
+                            2. Handle Nulls: UPDATE clean SET col = 'Default' WHERE col IS NULL;<br>
+                            3. Standardize Case: UPDATE clean SET col = UPPER(col);</p>
+                            
+                            <p><strong>Scenario C: Google Sheets</strong><br>
+                            Trim Whitespace, Remove Duplicates, Cleanup Suggestions, Split Text.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 4 -->
+        <section id="phase-4" x-show="matchesSearch('phase 4 eda exploratory analysis')" class="relative transition-all duration-500">
+            <div class="flex flex-col items-center mb-8 relative z-10">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#235347] to-[#8EB69B] text-white flex items-center justify-center text-2xl font-bold shadow-lg border-4 border-white">4</div>
+                <h2 class="mt-4 text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Exploratory Data Analysis</h2>
+            </div>
+
+            <div class="glass dark:bg-slate-800/50 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden border border-white/50" 
+                 x-data="{ activeTab: 'standard', edaTab: 'formulas', showDetails: false }" 
+                 @mode-change.window="activeTab = $event.detail">
+                <div class="flex border-b border-gray-200 dark:border-slate-700 justify-between items-center pr-4">
+                    <div class="flex flex-1">
+                        <button @click="activeTab = 'standard'" class="flex-1 py-4 text-center font-semibold transition-colors"
+                            :class="activeTab === 'standard' ? 'bg-[#E8F3EA] dark:bg-slate-700 text-[#051F20] dark:text-white border-b-2 border-[#235347] dark:border-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'">
+                            <i class="fa-solid fa-chart-line mr-2"></i>Standard Path
+                        </button>
+                        <button @click="activeTab = 'ai'" class="flex-1 py-4 text-center font-semibold transition-colors"
+                            :class="activeTab === 'ai' ? 'bg-[#E8F3EA] dark:bg-purple-900/20 text-[#235347] dark:text-[#8EB69B] border-b-2 border-[#8EB69B]' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'">
+                            <i class="fa-solid fa-brain mr-2"></i>AI Enhanced
+                        </button>
+                    </div>
+                    <button @click="showDetails = !showDetails" class="text-xs font-bold px-3 py-1 rounded-full border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fa-solid fa-book-open mr-1"></i> <span x-text="showDetails ? 'Less Detail' : 'More Detail'"></span>
+                    </button>
+                </div>
+
+                <div class="p-6 md:p-8 min-h-[200px]">
+                    <div x-show="activeTab === 'standard'">
+                        <!-- Horizontal Sub-Tabs for EDA -->
+                        <div class="mb-6" x-data="{ edaTab: 'formulas' }">
+                            <div class="flex gap-2 border-b border-slate-200 dark:border-slate-700 mb-6">
+                                <button @click="edaTab = 'formulas'" 
+                                    class="px-6 py-3 text-sm font-semibold transition-all"
+                                    :class="edaTab === 'formulas' ? 'border-b-2 border-[#235347] text-[#235347] dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'">
+                                    <i class="fa-solid fa-calculator mr-2"></i>Formulas
+                                </button>
+                                <button @click="edaTab = 'excel'" 
+                                    class="px-6 py-3 text-sm font-semibold transition-all"
+                                    :class="edaTab === 'excel' ? 'border-b-2 border-[#235347] text-green-600 dark:text-green-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'">
+                                    <i class="fa-solid fa-file-excel mr-2"></i>Excel
+                                </button>
+                                <button @click="edaTab = 'sql'" 
+                                    class="px-6 py-3 text-sm font-semibold transition-all"
+                                    :class="edaTab === 'sql' ? 'border-b-2 border-[#235347] text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'">
+                                    <i class="fa-solid fa-database mr-2"></i>SQL
+                                </button>
+                            </div>
+
+                            <!-- Formulas Tab Content -->
+                            <div x-show="edaTab === 'formulas'">
+                                <div class="bg-[#E8F3EA] dark:bg-indigo-900/10 p-4 rounded-lg border-l-4 border-[#235347] mb-4">
+                                    <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold"><i class="fa-solid fa-book text-[#235347] mr-2"></i>Essential Excel Functions</p>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full min-w-[600px] text-sm text-left glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg overflow-hidden">
+                                        <thead class="text-xs uppercase bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                                            <tr>
+                                                <th class="px-3 py-2">Category</th>
+                                                <th class="px-3 py-2">Formula</th>
+                                                <th class="px-3 py-2">Use Case</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200 dark:divide-slate-700">
+                                            <tr><td class="px-3 py-2 font-semibold">Logical</td><td class="px-3 py-2 font-mono text-[#235347]">=IF(), =IFS(), =IFERROR()</td><td class="px-3 py-2">Decision making & Error handling.</td></tr>
+                                            <tr><td class="px-3 py-2 font-semibold">Lookup</td><td class="px-3 py-2 font-mono text-[#235347]">=XLOOKUP(), =VLOOKUP()</td><td class="px-3 py-2">Connecting tables.</td></tr>
+                                            <tr><td class="px-3 py-2 font-semibold">Math</td><td class="px-3 py-2 font-mono text-[#235347]">=SUMIFS(), =COUNTIFS()</td><td class="px-3 py-2">Conditional aggregation.</td></tr>
+                                            <tr><td class="px-3 py-2 font-semibold">Stats</td><td class="px-3 py-2 font-mono text-[#235347]">=MEDIAN(), =STDEV.S()</td><td class="px-3 py-2">Finding outliers & risk.</td></tr>
+                                            <tr><td class="px-3 py-2 font-semibold">Text</td><td class="px-3 py-2 font-mono text-[#235347]">=TRIM(), =LEFT(), =TEXTJOIN()</td><td class="px-3 py-2">Cleaning & combining strings.</td></tr>
+                                            <tr><td class="px-3 py-2 font-semibold">Dates</td><td class="px-3 py-2 font-mono text-[#235347]">=DATEDIF(), =NETWORKDAYS()</td><td class="px-3 py-2">Calculating durations.</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Excel Tab Content -->
+                            <div x-show="edaTab === 'excel'">
+                                <div class="bg-[#E8F3EA] dark:bg-green-900/10 p-4 rounded-lg border-l-4 border-[#235347] mb-4">
+                                    <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold"><i class="fa-solid fa-chart-column text-[#235347] mr-2"></i>Visual & Interactive Analysis</p>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
+                                        <h4 class="font-bold text-slate-800 dark:text-white mb-2">1. The First Look</h4>
+                                        <p class="text-sm text-slate-600 dark:text-slate-300">Filter (Ctrl+Shift+L) → Check Unique Values → Sort (A-Z) → Conditional Formatting (Color Scales).</p>
+                                    </div>
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
+                                        <h4 class="font-bold text-slate-800 dark:text-white mb-2">2. PivotTables</h4>
+                                        <ul class="text-sm text-slate-600 dark:text-slate-300 space-y-1">
+                                            <li><strong>Rows:</strong> Group By (Category).</li>
+                                            <li><strong>Values:</strong> The Math (Sum/Count). Tip: Show Values As % of Grand Total.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
+                                        <h4 class="font-bold text-slate-800 dark:text-white mb-2">3. Visualization</h4>
+                                        <p class="text-sm text-slate-600 dark:text-slate-300">Histogram (Distribution), Scatter Plot (Relationship).</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SQL Tab Content -->
+                            <div x-show="edaTab === 'sql'">
+                                <div class="bg-[#E8F3EA] dark:bg-blue-900/10 p-4 rounded-lg border-l-4 border-[#235347] mb-4">
+                                    <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold"><i class="fa-solid fa-code text-[#235347] mr-2"></i>Code-Based Analysis</p>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg overflow-hidden">
+                                        <div class="bg-slate-800 text-white p-4 font-mono text-xs">
+                                            <p class="text-gray-400 mb-2">// 1. Summary Stats</p>
+                                            <p class="text-green-400">SELECT COUNT(*), AVG(price), MIN(price) FROM sales;</p>
+                                        </div>
+                                    </div>
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg overflow-hidden">
+                                        <div class="bg-slate-800 text-white p-4 font-mono text-xs">
+                                            <p class="text-gray-400 mb-2">// 2. Segmentation</p>
+                                            <p class="text-blue-400">SELECT cat, COUNT(*) FROM sales GROUP BY cat ORDER BY 2 DESC;</p>
+                                        </div>
+                                    </div>
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg overflow-hidden">
+                                        <div class="bg-slate-800 text-white p-4 font-mono text-xs">
+                                            <p class="text-gray-400 mb-2">// 3. Advanced Filter (HAVING)</p>
+                                            <p class="text-purple-400">SELECT cat, SUM(sales) FROM sales GROUP BY cat HAVING SUM(sales) > 1000;</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div x-show="activeTab === 'ai'">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <!-- Excel Prompts -->
+                            <div class="space-y-4">
+                                <h4 class="font-bold text-green-600 dark:text-green-400 border-b border-green-200 pb-2">Excel Prompts</h4>
+                                <div class="bg-[#E8F3EA] dark:bg-green-900/20 p-4 rounded-lg border border-green-100 dark:border-green-800 relative group">
+                                    <button @click="copyToClipboard($refs.eda_ex1, $event)" class="absolute top-2 right-2 text-green-400 hover:text-green-600"><i class="fa-regular fa-copy"></i></button>
+                                    <p class="font-bold text-green-800 dark:text-green-300 text-xs mb-1">Formula Helper</p>
+                                    <p class="text-slate-700 dark:text-slate-300 font-mono text-xs" x-ref="eda_ex1">"I need to look up Product_ID in Sheet1 and return Price from Sheet2. Write the XLOOKUP formula for me."</p>
+                                </div>
+                                <div class="bg-[#E8F3EA] dark:bg-green-900/20 p-4 rounded-lg border border-green-100 dark:border-green-800 relative group">
+                                    <button @click="copyToClipboard($refs.eda_ex2, $event)" class="absolute top-2 right-2 text-green-400 hover:text-green-600"><i class="fa-regular fa-copy"></i></button>
+                                    <p class="font-bold text-green-800 dark:text-green-300 text-xs mb-1">Error Debugger</p>
+                                    <p class="text-slate-700 dark:text-slate-300 font-mono text-xs" x-ref="eda_ex2">"My VLOOKUP is returning #N/A but I know the value exists. What are the common reasons for this error?"</p>
+                                </div>
+                                 <div class="bg-[#E8F3EA] dark:bg-green-900/20 p-4 rounded-lg border border-green-100 dark:border-green-800 relative group">
+                                    <button @click="copyToClipboard($refs.eda_ex3, $event)" class="absolute top-2 right-2 text-green-400 hover:text-green-600"><i class="fa-regular fa-copy"></i></button>
+                                    <p class="font-bold text-green-800 dark:text-green-300 text-xs mb-1">Pivot Strategy</p>
+                                    <p class="text-slate-700 dark:text-slate-300 font-mono text-xs" x-ref="eda_ex3">"I have a dataset with columns [Date, Sales, Region]. Suggest 3 PivotTable layouts to find the most profitable region."</p>
+                                </div>
+                            </div>
+
+                            <!-- SQL Prompts -->
+                            <div class="space-y-4">
+                                <h4 class="font-bold text-blue-600 dark:text-blue-400 border-b border-blue-200 pb-2">SQL Prompts</h4>
+                                <div class="bg-[#E8F3EA] dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800 relative group">
+                                    <button @click="copyToClipboard($refs.eda_sql1, $event)" class="absolute top-2 right-2 text-blue-400 hover:text-blue-600"><i class="fa-regular fa-copy"></i></button>
+                                    <p class="font-bold text-blue-800 dark:text-blue-300 text-xs mb-1">Query Writer</p>
+                                    <p class="text-slate-700 dark:text-slate-300 font-mono text-xs" x-ref="eda_sql1">"Write a SQL query to calculate the top 5 customers by total spending in 2024."</p>
+                                </div>
+                                <div class="bg-[#E8F3EA] dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800 relative group">
+                                    <button @click="copyToClipboard($refs.eda_sql2, $event)" class="absolute top-2 right-2 text-blue-400 hover:text-blue-600"><i class="fa-regular fa-copy"></i></button>
+                                    <p class="font-bold text-blue-800 dark:text-blue-300 text-xs mb-1">Logic Explainer</p>
+                                    <p class="text-slate-700 dark:text-slate-300 font-mono text-xs" x-ref="eda_sql2">"Explain the difference between WHERE and HAVING in SQL with a simple example."</p>
+                                </div>
+                                <div class="bg-[#E8F3EA] dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800 relative group">
+                                    <button @click="copyToClipboard($refs.eda_sql3, $event)" class="absolute top-2 right-2 text-blue-400 hover:text-blue-600"><i class="fa-regular fa-copy"></i></button>
+                                    <p class="font-bold text-blue-800 dark:text-blue-300 text-xs mb-1">Error Fixer</p>
+                                    <p class="text-slate-700 dark:text-slate-300 font-mono text-xs" x-ref="eda_sql3">"My query failed with 'Error Code 1055'. Fix this query: [Paste Code]."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    
+                    <!-- Full Details View -->
+                    <div x-show="showDetails" x-collapse class="bg-slate-50 border-t border-gray-200 p-6 text-sm text-slate-700 space-y-4">
+                        <h4 class="font-bold text-slate-800">Phase 4: EDA (Source Content)</h4>
+                        <div class="prose prose-sm max-w-none">
+                            <p><strong>Goal:</strong> Find patterns, anomalies, and summary statistics.</p>
+                            <p><strong>Section 1: The Master Formula Sheet</strong><br>
+                            Logical: IF, IFS, AND/OR, IFERROR.<br>
+                            Lookup: XLOOKUP, VLOOKUP, MATCH.<br>
+                            Math: SUMIFS, COUNTIFS, MEDIAN, STDEV.S.<br>
+                            Text: TRIM, LEFT/RIGHT/MID, LEN, TEXTJOIN.<br>
+                            Dates: DATEDIF, NETWORKDAYS.</p>
+                            
+                            <p><strong>Section 2: Excel EDA Workflow</strong><br>
+                            1. First Look: Filter, Sort, Conditional Formatting.<br>
+                            2. PivotTables: Filters, Rows, Columns, Values.<br>
+                            3. Visualization: Histogram (Distribution), Scatter Plot (Relationship).</p>
+                            
+                            <p><strong>Section 3: SQL EDA Workflow</strong><br>
+                            1. Structure: DESCRIBE table.<br>
+                            2. Summary Stats: COUNT, AVG, MIN, MAX.<br>
+                            3. Segmentation: GROUP BY.<br>
+                            4. Advanced Filtering: HAVING.<br>
+                            5. Bad Data Check: WHERE col IS NULL.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 5 -->
+        <section id="phase-5" x-show="matchesSearch('phase 5 visualization dashboard')" class="relative transition-all duration-500">
+            <div class="flex flex-col items-center mb-8 relative z-10">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#163832] to-[#235347] text-white flex items-center justify-center text-2xl font-bold shadow-lg border-4 border-white">5</div>
+                <h2 class="mt-4 text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Visualization & Dashboarding</h2>
+            </div>
+
+            <div class="glass dark:bg-slate-800/50 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden border border-white/50 hover-bounce transition-all duration-300" 
+                 x-data="{ activeTab: 'standard', openSection: 'toolkit', showDetails: false }" 
+                 @mode-change.window="activeTab = $event.detail">
+                <div class="flex border-b border-gray-200 dark:border-slate-700 justify-between items-center pr-4">
+                    <div class="flex flex-1">
+                        <button @click="activeTab = 'standard'" class="flex-1 py-4 text-center font-semibold transition-colors"
+                            :class="activeTab === 'standard' ? 'bg-[#E8F3EA] dark:bg-slate-700 text-[#051F20] dark:text-white border-b-2 border-[#235347] dark:border-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'">
+                            <i class="fa-solid fa-chart-pie mr-2"></i>Standard Path
+                        </button>
+                        <button @click="activeTab = 'ai'" class="flex-1 py-4 text-center font-semibold transition-colors"
+                            :class="activeTab === 'ai' ? 'bg-[#E8F3EA] dark:bg-purple-900/20 text-[#235347] dark:text-[#8EB69B] border-b-2 border-[#8EB69B]' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>AI Enhanced
+                        </button>
+                    </div>
+                    <button @click="showDetails = !showDetails" class="text-xs font-bold px-3 py-1 rounded-full border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fa-solid fa-book-open mr-1"></i> <span x-text="showDetails ? 'Less Detail' : 'More Detail'"></span>
+                    </button>
+                </div>
+
+                <div class="p-6 md:p-8 min-h-[300px]">
+                    <div x-show="activeTab === 'standard'">
+                        <!-- Horizontal Sub-Tabs for Visualization -->
+                        <div class="mb-6" x-data="{ vizTab: 'toolkit' }">
+                            <div class="flex gap-2 border-b border-slate-200 dark:border-slate-700 mb-6">
+                                <button @click="vizTab = 'toolkit'" 
+                                    class="px-6 py-3 text-sm font-semibold transition-all"
+                                    :class="vizTab === 'toolkit' ? 'border-b-2 border-[#235347] text-pink-600 dark:text-pink-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'">
+                                    <i class="fa-solid fa-toolbox mr-2"></i>Toolkit
+                                </button>
+                                <button @click="vizTab = 'charts'" 
+                                    class="px-6 py-3 text-sm font-semibold transition-all"
+                                    :class="vizTab === 'charts' ? 'border-b-2 border-rose-500 text-rose-600 dark:text-rose-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'">
+                                    <i class="fa-solid fa-chart-pie mr-2"></i>Charts
+                                </button>
+                                <button @click="vizTab = 'layout'" 
+                                    class="px-6 py-3 text-sm font-semibold transition-all"
+                                    :class="vizTab === 'layout' ? 'border-b-2 border-purple-500 text-purple-600 dark:text-purple-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'">
+                                    <i class="fa-solid fa-table-columns mr-2"></i>Layout
+                                </button>
+                            </div>
+
+                            <!-- Toolkit Tab Content -->
+                            <div x-show="vizTab === 'toolkit'">
+                                <div class="bg-[#E8F3EA] dark:bg-pink-900/10 p-4 rounded-lg border-l-4 border-[#235347] mb-4">
+                                    <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold"><i class="fa-solid fa-wrench text-[#235347] mr-2"></i>Setup & Strategy</p>
+                                </div>
+                                <div class="grid md:grid-cols-2 gap-6 text-sm">
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-6 rounded-lg border border-slate-200">
+                                        <h4 class="text-slate-800 dark:text-white font-bold mb-3"><i class="fa-solid fa-file-excel text-[#235347] mr-2"></i>Microsoft Excel (Static)</h4>
+                                        <ul class="list-disc list-inside text-slate-600 dark:text-slate-300 space-y-2 ml-1">
+                                            <li><strong>Clean Canvas:</strong> Uncheck Gridlines.</li>
+                                            <li><strong>Slicers:</strong> Visual filters linked to PivotTables.</li>
+                                            <li><strong>Sparklines:</strong> Mini-charts in cells.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-6 rounded-lg border border-slate-200">
+                                        <h4 class="text-slate-800 dark:text-white font-bold mb-3"><i class="fa-solid fa-chart-simple text-[#8EB69B] mr-2"></i>Power BI / Tableau (Interactive)</h4>
+                                        <ul class="list-disc list-inside text-slate-600 dark:text-slate-300 space-y-2 ml-1">
+                                            <li><strong>Interactivity:</strong> Cross-filtering & Drill-downs.</li>
+                                            <li><strong>Modeling:</strong> Star Schema (Fact vs. Dim tables).</li>
+                                            <li><strong>DAX/Calcs:</strong> Custom measures (YoY Growth).</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Charts Tab Content -->
+                            <div x-show="vizTab === 'charts'">
+                                <div class="bg-rose-50 dark:bg-rose-900/10 p-4 rounded-lg border-l-4 border-rose-500 mb-4">
+                                    <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold"><i class="fa-solid fa-compass-drafting text-rose-500 mr-2"></i>Choosing the Right Visual</p>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full min-w-[600px] text-sm text-left glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg overflow-hidden">
+                                        <thead class="text-xs uppercase bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                                            <tr>
+                                                <th class="px-3 py-2">Goal</th>
+                                                <th class="px-3 py-2">Recommended Chart</th>
+                                                <th class="px-3 py-2">Key Feature</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200 dark:divide-slate-700">
+                                            <tr><td class="px-3 py-2 font-semibold">Comparison</td><td class="px-3 py-2">Bar (Horiz) / Column (Vert)</td><td class="px-3 py-2">Clustered Column</td></tr>
+                                            <tr><td class="px-3 py-2 font-semibold">Trend</td><td class="px-3 py-2">Line Chart</td><td class="px-3 py-2">Dates on X-axis</td></tr>
+                                            <tr><td class="px-3 py-2 font-semibold">Distribution</td><td class="px-3 py-2">Histogram / Box Plot</td><td class="px-3 py-2">Bins (Groups)</td></tr>
+                                            <tr><td class="px-3 py-2 font-semibold">Relationship</td><td class="px-3 py-2">Scatter Plot</td><td class="px-3 py-2">2 Numerical Vars</td></tr>
+                                            <tr><td class="px-3 py-2 font-semibold">Part-to-Whole</td><td class="px-3 py-2">Pie / Donut</td><td class="px-3 py-2">Max 5 Categories</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Layout Tab Content -->
+                            <div x-show="vizTab === 'layout'">
+                                <div class="bg-purple-50 dark:bg-purple-900/10 p-4 rounded-lg border-l-4 border-purple-500 mb-4">
+                                    <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold"><i class="fa-solid fa-layer-group text-[#235347] mr-2"></i>The "Vibe" Layout (F-Pattern)</p>
+                                </div>
+                                <div class="space-y-4 text-sm text-slate-600 dark:text-slate-300">
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
+                                        <p><strong><i class="fa-solid fa-layer-group text-[#235347] mr-2"></i>F-Pattern Layout:</strong> Key Numbers (Top Left) → Charts (Middle) → Tables (Bottom).</p>
+                                    </div>
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
+                                        <p><strong><i class="fa-solid fa-bullseye text-[#235347] mr-2"></i>Storytelling:</strong> Context → Insight → Recommendation.</p>
+                                    </div>
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
+                                        <p><strong><i class="fa-solid fa-palette text-[#235347] mr-2"></i>Color Strategy:</strong> Use Grey for context, Bright Colors (Red/Blue) for insights. Avoid "Chart Junk".</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div x-show="activeTab === 'ai'">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-gradient-to-r from-pink-50 to-rose-50 p-6 rounded-xl border border-pink-100 relative group hover-bounce">
+                                <button @click="copyToClipboard($refs.p5_1, $event)" class="absolute top-4 right-4 text-pink-300 hover:text-pink-600 transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-pink-800 mb-2">The Chart Advisor</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p5_1">"I have a dataset with [Variable A: Date] and [Variable B: Satisfaction Score]. I want to show how satisfaction has changed over time. What is the best chart to use and why?"</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-pink-50 to-rose-50 p-6 rounded-xl border border-pink-100 relative group hover-bounce">
+                                <button @click="copyToClipboard($refs.p5_2, $event)" class="absolute top-4 right-4 text-pink-300 hover:text-pink-600 transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-pink-800 mb-2">DAX/Formula Writer</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p5_2">"Act as a Power BI Expert. Write a DAX formula to calculate the 'Year-over-Year Growth %'. My table is named Sales and the column is Total_Amount."</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-pink-50 to-rose-50 p-6 rounded-xl border border-pink-100 relative group hover-bounce">
+                                <button @click="copyToClipboard($refs.p5_3, $event)" class="absolute top-4 right-4 text-pink-300 hover:text-pink-600 transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-pink-800 mb-2">The Design Critic</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p5_3">"I am building a dashboard for the CEO. Suggest a color palette and layout structure that is professional and easy to read."</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Full Details View -->
+                    <div x-show="showDetails" x-collapse class="bg-slate-50 border-t border-gray-200 p-6 text-sm text-slate-700 space-y-4">
+                        <h4 class="font-bold text-slate-800">Phase 5: Visualization (Source Content)</h4>
+                        <div class="prose prose-sm max-w-none">
+                            <p><strong>Goal:</strong> Communicate findings visually. Convert raw numbers into a story.</p>
+                            <p><strong>Step 5.1: The Toolkit</strong><br>
+                            Excel: Clean Canvas (No Gridlines), PivotCharts, Slicers.<br>
+                            Tableau/Power BI: Interactivity, Cross-Filtering, Maps, Tooltips.</p>
+                            <p><strong>Step 5.2: Chart Selection Matrix</strong><br>
+                            Comparison: Bar/Column.<br>
+                            Trend: Line.<br>
+                            Distribution: Histogram.<br>
+                            Relationship: Scatter.<br>
+                            Part-to-Whole: Pie (Max 5 cats).</p>
+                            <p><strong>Step 5.3: Dashboard Construction</strong><br>
+                            F-Pattern: Key Numbers (Top Left) -> Charts -> Tables.<br>
+                            Color: Use purpose-driven color (Alerts vs Context).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 6 -->
+        <section id="phase-6" x-show="matchesSearch('phase 6 reporting portfolio')" class="relative transition-all duration-500">
+            <div class="flex flex-col items-center mb-8 relative z-10">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#0B2B26] to-[#163832] text-white flex items-center justify-center text-2xl font-bold shadow-lg border-4 border-white">6</div>
+                <h2 class="mt-4 text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Reporting & Portfolio</h2>
+            </div>
+
+            <div class="glass dark:bg-slate-800/50 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden border border-white/50 hover-bounce transition-all duration-300" 
+                 x-data="{ activeTab: 'standard', openSection: 'story', showDetails: false }"
+                 @mode-change.window="activeTab = $event.detail">
+                
+                <div class="flex border-b border-gray-200 dark:border-slate-700 justify-between items-center pr-4">
+                    <div class="flex flex-1">
+                        <button @click="activeTab = 'standard'" class="flex-1 py-4 text-center font-semibold transition-colors"
+                            :class="activeTab === 'standard' ? 'bg-[#E8F3EA] dark:bg-slate-700 text-[#051F20] dark:text-white border-b-2 border-[#235347] dark:border-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'">
+                            <i class="fa-solid fa-bullhorn mr-2"></i>Standard Path
+                        </button>
+                        <button @click="activeTab = 'ai'" class="flex-1 py-4 text-center font-semibold transition-colors"
+                            :class="activeTab === 'ai' ? 'bg-[#E8F3EA] dark:bg-purple-900/20 text-[#235347] dark:text-[#8EB69B] border-b-2 border-[#8EB69B]' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>AI Enhanced
+                        </button>
+                    </div>
+                    <button @click="showDetails = !showDetails" class="text-xs font-bold px-3 py-1 rounded-full border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fa-solid fa-book-open mr-1"></i> <span x-text="showDetails ? 'Less Detail' : 'More Detail'"></span>
+                    </button>
+                </div>
+
+                <div class="p-6 md:p-8 min-h-[300px]">
+                    <!-- Standard Path -->
+                    <div x-show="activeTab === 'standard'">
+                        <!-- Horizontal Sub-Tabs for Reporting -->
+                        <div class="mb-6" x-data="{ reportTab: 'story' }">
+                            <div class="flex gap-2 border-b border-slate-200 dark:border-slate-700 mb-6">
+                                <button @click="reportTab = 'story'" 
+                                    class="px-6 py-3 text-sm font-semibold transition-all"
+                                    :class="reportTab === 'story' ? 'border-b-2 border-teal-500 text-teal-600 dark:text-teal-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'">
+                                    <i class="fa-solid fa-book-open-reader mr-2"></i>Storytelling
+                                </button>
+                                <button @click="reportTab = 'github'" 
+                                    class="px-6 py-3 text-sm font-semibold transition-all"
+                                    :class="reportTab === 'github' ? 'border-b-2 border-slate-500 text-slate-700 dark:text-slate-300' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'">
+                                    <i class="fa-brands fa-github mr-2"></i>GitHub
+                                </button>
+                                <button @click="reportTab = 'linkedin'" 
+                                    class="px-6 py-3 text-sm font-semibold transition-all"
+                                    :class="reportTab === 'linkedin' ? 'border-b-2 border-blue-600 text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'">
+                                    <i class="fa-brands fa-linkedin mr-2"></i>LinkedIn
+                                </button>
+                            </div>
+
+                            <!-- Storytelling Tab Content -->
+                            <div x-show="reportTab === 'story'">
+                                <div class="bg-teal-50 dark:bg-teal-900/10 p-4 rounded-lg border-l-4 border-teal-500 mb-4">
+                                    <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold"><i class="fa-solid fa-comments text-teal-500 mr-2"></i>The S-C-R Framework</p>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200 flex items-start gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0">S</div>
+                                        <div class="flex-1">
+                                            <strong class="block text-slate-700 dark:text-slate-200 mb-1">Situation</strong>
+                                            <p class="text-sm text-slate-600 dark:text-slate-400">"Sales in Q3 dropped by 15% compared to last year."</p>
+                                        </div>
+                                    </div>
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200 flex items-start gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold shrink-0">C</div>
+                                        <div class="flex-1">
+                                            <strong class="block text-slate-700 dark:text-slate-200 mb-1">Complication</strong>
+                                            <p class="text-sm text-slate-600 dark:text-slate-400">"Due to stockouts in 'Electronics' during July sale."</p>
+                                        </div>
+                                    </div>
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200 flex items-start gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold shrink-0">R</div>
+                                        <div class="flex-1">
+                                            <strong class="block text-slate-700 dark:text-slate-200 mb-1">Resolution</strong>
+                                            <p class="text-sm text-slate-600 dark:text-slate-400">"Increase inventory buffer by 20% for Q4."</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- GitHub Tab Content -->
+                            <div x-show="reportTab === 'github'">
+                                <div class="bg-slate-100 dark:bg-slate-800/30 p-4 rounded-lg border-l-4 border-slate-500 mb-4">
+                                    <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold"><i class="fa-brands fa-github text-slate-700 dark:text-slate-300 mr-2"></i>Showcase Your Code</p>
+                                </div>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
+                                        <h4 class="font-bold text-slate-700 dark:text-slate-300 text-sm mb-3">Upload Checklist</h4>
+                                        <ul class="text-xs text-slate-600 dark:text-slate-400 space-y-2">
+                                            <li><i class="fa-solid fa-file-csv text-[#235347] mr-2"></i>Raw_Data (Anonymized!)</li>
+                                            <li><i class="fa-solid fa-code text-[#235347] mr-2"></i>SQL_Queries.sql</li>
+                                            <li><i class="fa-solid fa-book text-[#8EB69B] mr-2"></i>README.md</li>
+                                            <li><i class="fa-solid fa-image text-[#235347] mr-2"></i>Dashboard_Screenshot.png</li>
+                                        </ul>
+                                    </div>
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
+                                        <h4 class="font-bold text-slate-700 dark:text-slate-300 text-sm mb-3">README Structure</h4>
+                                        <ul class="text-xs text-slate-600 dark:text-slate-400 space-y-2">
+                                            <li>1. Project Title (Catchy)</li>
+                                            <li>2. Objective (The Question)</li>
+                                            <li>3. Tools Used (SQL, BI)</li>
+                                            <li>4. Key Findings (Bullets)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- LinkedIn Tab Content -->
+                            <div x-show="reportTab === 'linkedin'">
+                                <div class="bg-[#E8F3EA] dark:bg-blue-900/10 p-4 rounded-lg border-l-4 border-blue-600 mb-4">
+                                    <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold"><i class="fa-brands fa-linkedin text-blue-600 mr-2"></i>Go Viral</p>
+                                </div>
+                                <div class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
+                                        <p><strong><i class="fa-solid fa-anchor text-[#235347] mr-2"></i>The Hook:</strong> "Did you know 20% of customers cause 80% of churn?"</p>
+                                    </div>
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
+                                        <p><strong><i class="fa-solid fa-gears text-[#163832] mr-2"></i>The Process:</strong> "Analyzed 50k rows with SQL & Power BI..."</p>
+                                    </div>
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
+                                        <p><strong><i class="fa-solid fa-image text-[#235347] mr-2"></i>The Visual:</strong> High-quality dashboard screenshot.</p>
+                                    </div>
+                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
+                                        <p><strong><i class="fa-solid fa-link text-[#235347] mr-2"></i>CTA:</strong> "Link to GitHub code in comments."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Path -->
+                    <div x-show="activeTab === 'ai'">
+                        <div class="grid gap-6">
+                            <div class="bg-gradient-to-r from-[#E8F3EA] to-white p-6 rounded-xl border border-[#8EB69B] relative group hover-bounce">
+                                <button @click="copyToClipboard($refs.p6_1, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2"><i class="fa-solid fa-file-pen mr-2"></i>Executive Summary</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p6_1">"Act as a Lead Data Analyst. I found that sales dropped due to inventory issues. Write a 1-paragraph Executive Summary for the CEO highlighting financial impact and solution."</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-[#E8F3EA] to-white p-6 rounded-xl border border-[#8EB69B] relative group hover-bounce">
+                                <button @click="copyToClipboard($refs.p6_2, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2"><i class="fa-brands fa-github mr-2"></i>README Generator</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p6_2">"Write a professional README.md structure for a Data Analysis project about Customer Churn. Include: Problem Statement, Tools Used, Cleaning Method, and Key Insights."</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-[#E8F3EA] to-white p-6 rounded-xl border border-[#8EB69B] relative group hover-bounce">
+                                <button @click="copyToClipboard($refs.p6_3, $event)" class="absolute top-4 right-4 text-[#8EB69B] hover:text-[#235347] transition-colors"><i class="fa-regular fa-copy"></i></button>
+                                <h4 class="font-bold text-[#051F20] mb-2"><i class="fa-brands fa-linkedin mr-2"></i>Viral Post Drafter</h4>
+                                <p class="text-slate-700 font-mono text-sm" x-ref="p6_3">"Draft a LinkedIn post showcasing my new 'E-commerce Sales Dashboard'. Highlight SQL & Viz skills. Use emojis moderately. Include a hook."</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Full Details View -->
+                    <div x-show="showDetails" x-collapse class="mt-4 pt-4 border-t border-gray-200 text-sm text-slate-700 space-y-2">
+                        <h4 class="font-bold text-slate-800">Source Content</h4>
+                        <p><strong>Data Storytelling:</strong> S-C-R Framework (Situation, Complication, Resolution).</p>
+                        <p><strong>GitHub Portfolio:</strong> Raw_Data (Anonymized), SQL_Queries.sql, README.md, Dashboard_Screenshot.png.</p>
+                        <p><strong>LinkedIn Branding:</strong> Hook ("Did you know..."), Process ("Analyzed 50k rows..."), Visual (Screenshot), CTA (Link).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Arsenal -->
+    <section id="arsenal" class="bg-[#E8F3EA] dark:bg-slate-900 py-12 mb-24 text-[#051F20] dark:text-white relative overflow-hidden transition-colors duration-300">
+        <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <h2 class="text-3xl font-bold mb-8 text-center"><i class="fa-solid fa-toolbox mr-3 text-[#235347]"></i>Technical Arsenal</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Excel -->
+                <div class="bg-white/60 dark:bg-slate-800 p-6 rounded-xl border border-[#8EB69B] dark:border-slate-600 hover:border-[#235347] transition-colors group shadow-lg">
+                    <h3 class="text-xl font-bold mb-4 text-[#235347] dark:text-pink-400">Excel Shortcuts</h3>
+                    <ul class="space-y-2 text-sm text-slate-600 dark:text-gray-300 font-mono">
+                        <li class="flex justify-between"><span>Filter</span> <span class="text-slate-800 dark:text-white">Ctrl+Shift+L</span></li>
+                        <li class="flex justify-between"><span>Table</span> <span class="text-slate-800 dark:text-white">Ctrl+T</span></li>
+                        <li class="flex justify-between"><span>Select All</span> <span class="text-slate-800 dark:text-white">Ctrl+A</span></li>
+                        <li class="flex justify-between"><span>Format Cells</span> <span class="text-slate-800 dark:text-white">Ctrl+1</span></li>
+                    </ul>
+                </div>
+                <!-- SQL -->
+                <div class="bg-white/60 dark:bg-slate-800 p-6 rounded-xl border border-[#8EB69B] dark:border-slate-600 hover:border-[#235347] transition-colors group shadow-lg">
+                    <h3 class="text-xl font-bold mb-4 text-[#235347] dark:text-blue-400">SQL Commands</h3>
+                    <ul class="space-y-2 text-sm text-slate-600 dark:text-gray-300 font-mono">
+                        <li class="flex justify-between"><span>Retrieve</span> <span class="text-slate-800 dark:text-white">SELECT</span></li>
+                        <li class="flex justify-between"><span>Filter</span> <span class="text-slate-800 dark:text-white">WHERE</span></li>
+                        <li class="flex justify-between"><span>Group</span> <span class="text-slate-800 dark:text-white">GROUP BY</span></li>
+                        <li class="flex justify-between"><span>Sort</span> <span class="text-slate-800 dark:text-white">ORDER BY</span></li>
+                    </ul>
+                </div>
+                <!-- Python -->
+                <div class="bg-white/60 dark:bg-slate-800 p-6 rounded-xl border border-[#8EB69B] dark:border-slate-600 hover:border-[#235347] transition-colors group shadow-lg">
+                    <h3 class="text-xl font-bold mb-4 text-[#235347] dark:text-yellow-400">Pandas Basics</h3>
+                    <ul class="space-y-2 text-sm text-slate-600 dark:text-gray-300 font-mono">
+                        <li class="flex justify-between"><span>Read CSV</span> <span class="text-slate-800 dark:text-white">pd.read_csv()</span></li>
+                        <li class="flex justify-between"><span>Filter</span> <span class="text-slate-800 dark:text-white">df[df['col']>0]</span></li>
+                        <li class="flex justify-between"><span>Info</span> <span class="text-slate-800 dark:text-white">df.info()</span></li>
+                        <li class="flex justify-between"><span>Describe</span> <span class="text-slate-800 dark:text-white">df.describe()</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ultimate Cheat Sheet -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
+        <div class="glass dark:bg-slate-800/50 dark:border-slate-700 p-8 rounded-2xl border border-white/50">
+            <h2 class="text-3xl font-bold text-slate-800 dark:text-white mb-6 text-center">The Ultimate Cheat Sheet</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full min-w-[800px] text-sm text-left text-slate-600 dark:text-slate-300">
+                    <thead class="text-xs text-slate-300 uppercase bg-[#051F20] dark:bg-slate-800">
+                        <tr>
+                            <th class="px-4 py-3 rounded-tl-lg">Task</th>
+                            <th class="px-4 py-3">Excel Formula</th>
+                            <th class="px-4 py-3">SQL Command</th>
+                            <th class="px-4 py-3 rounded-tr-lg">Python (Pandas)</th>
+                        </tr>
+                    </thead>
+                    <!-- Retrieval & Filtering -->
+                    <tbody class="divide-y divide-slate-700" x-data="{ open: false }">
+                        <tr class="cursor-pointer hover:opacity-90 transition-opacity" @click="open = !open">
+                            <td class="px-4 py-3 font-bold text-white bg-[#163832]" colspan="4">
+                                <div class="flex justify-between items-center">
+                                    <span>1. Retrieval & Filtering</span>
+                                    <i class="fa-solid fa-chevron-down transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Select Columns</td>
+                            <td class="px-4 py-3 font-mono text-xs">-</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">SELECT col</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df[['col']]</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Filter Rows</td>
+                            <td class="px-4 py-3 font-mono text-xs">=FILTER(rng, cond)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">WHERE col > 5</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df[df['col'] > 5]</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Top N Rows</td>
+                            <td class="px-4 py-3 font-mono text-xs">-</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">LIMIT 5</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df.head(5)</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Sort Values</td>
+                            <td class="px-4 py-3 font-mono text-xs">=SORT(rng)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">ORDER BY col</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df.sort_values('col')</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Unique Values</td>
+                            <td class="px-4 py-3 font-mono text-xs">=UNIQUE(rng)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">DISTINCT col</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].unique()</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Rename Column</td>
+                            <td class="px-4 py-3 font-mono text-xs">-</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">SELECT col AS new</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df.rename(columns={})</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Cast Type</td>
+                            <td class="px-4 py-3 font-mono text-xs">-</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">CAST(col AS type)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df.astype(type)</td>
+                        </tr>
+                    </tbody>
+
+                    <!-- Cleaning & Transformation -->
+                    <tbody class="divide-y divide-slate-700" x-data="{ open: false }">
+                        <tr class="cursor-pointer hover:opacity-90 transition-opacity" @click="open = !open">
+                            <td class="px-4 py-3 font-bold text-white bg-[#163832]" colspan="4">
+                                <div class="flex justify-between items-center">
+                                    <span>2. Cleaning & Transformation</span>
+                                    <i class="fa-solid fa-chevron-down transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Remove Duplicates</td>
+                            <td class="px-4 py-3 font-mono text-xs">Data > Remove Dups</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">GROUP BY all_cols</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df.drop_duplicates()</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Fill Nulls</td>
+                            <td class="px-4 py-3 font-mono text-xs">=IFNA(val, 0)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">COALESCE(col, 0)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df.fillna(0)</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Drop Nulls</td>
+                            <td class="px-4 py-3 font-mono text-xs">Filter > Blanks</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">WHERE col IS NOT NULL</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df.dropna()</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Trim Spaces</td>
+                            <td class="px-4 py-3 font-mono text-xs">=TRIM(txt)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">TRIM(col)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].str.strip()</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Change Case</td>
+                            <td class="px-4 py-3 font-mono text-xs">=UPPER/LOWER(txt)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">UPPER/LOWER(col)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].str.lower()</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Replace Text</td>
+                            <td class="px-4 py-3 font-mono text-xs">=SUBSTITUTE(txt,old,new)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">REPLACE(col,old,new)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].replace(old,new)</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Extract Substring</td>
+                            <td class="px-4 py-3 font-mono text-xs">=MID(txt, start, len)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">SUBSTRING(col, pos, len)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].str[0:5]</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Concatenate</td>
+                            <td class="px-4 py-3 font-mono text-xs">=A1 & B1</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">CONCAT(col1, col2)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['c1'] + df['c2']</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Split Text</td>
+                            <td class="px-4 py-3 font-mono text-xs">=TEXTSPLIT(txt, " ")</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">SUBSTRING_INDEX</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].str.split()</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Find Position</td>
+                            <td class="px-4 py-3 font-mono text-xs">=FIND("x", txt)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">LOCATE("x", col)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].str.find("x")</td>
+                        </tr>
+                    </tbody>
+
+                    <!-- Math & Aggregation -->
+                    <tbody class="divide-y divide-slate-700" x-data="{ open: false }">
+                        <tr class="cursor-pointer hover:opacity-90 transition-opacity" @click="open = !open">
+                            <td class="px-4 py-3 font-bold text-white bg-[#163832]" colspan="4">
+                                <div class="flex justify-between items-center">
+                                    <span>3. Math & Aggregation</span>
+                                    <i class="fa-solid fa-chevron-down transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Sum</td>
+                            <td class="px-4 py-3 font-mono text-xs">=SUM(rng)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">SUM(col)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].sum()</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Average</td>
+                            <td class="px-4 py-3 font-mono text-xs">=AVERAGE(rng)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">AVG(col)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].mean()</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Count</td>
+                            <td class="px-4 py-3 font-mono text-xs">=COUNT(rng)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">COUNT(col)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].count()</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Min / Max</td>
+                            <td class="px-4 py-3 font-mono text-xs">=MIN/MAX(rng)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">MIN/MAX(col)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].min()</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Median</td>
+                            <td class="px-4 py-3 font-mono text-xs">=MEDIAN(rng)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">PERCENTILE_CONT(0.5)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].median()</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Standard Dev</td>
+                            <td class="px-4 py-3 font-mono text-xs">=STDEV.S(rng)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">STDDEV(col)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].std()</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Group By Sum</td>
+                            <td class="px-4 py-3 font-mono text-xs">PivotTable</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">GROUP BY col</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df.groupby('col').sum()</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Round</td>
+                            <td class="px-4 py-3 font-mono text-xs">=ROUND(num, 2)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">ROUND(col, 2)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].round(2)</td>
+                        </tr>
+                    </tbody>
+
+                    <!-- Date & Time -->
+                    <tbody class="divide-y divide-slate-700" x-data="{ open: false }">
+                        <tr class="cursor-pointer hover:opacity-90 transition-opacity" @click="open = !open">
+                            <td class="px-4 py-3 font-bold text-white bg-[#163832]" colspan="4">
+                                <div class="flex justify-between items-center">
+                                    <span>4. Date & Time</span>
+                                    <i class="fa-solid fa-chevron-down transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Current Date</td>
+                            <td class="px-4 py-3 font-mono text-xs">=TODAY()</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">CURRENT_DATE()</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">pd.to_datetime('today')</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Extract Year</td>
+                            <td class="px-4 py-3 font-mono text-xs">=YEAR(date)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">EXTRACT(YEAR FROM col)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['dt'].dt.year</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Extract Month</td>
+                            <td class="px-4 py-3 font-mono text-xs">=MONTH(date)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">EXTRACT(MONTH FROM col)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['dt'].dt.month</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Date Difference</td>
+                            <td class="px-4 py-3 font-mono text-xs">=DATEDIF(start, end, "d")</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">DATEDIFF(end, start)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">(d1 - d2).dt.days</td>
+                        </tr>
+                    </tbody>
+
+                    <!-- Logic & Control Flow -->
+                    <tbody class="divide-y divide-slate-700" x-data="{ open: false }">
+                        <tr class="cursor-pointer hover:opacity-90 transition-opacity" @click="open = !open">
+                            <td class="px-4 py-3 font-bold text-white bg-[#163832]" colspan="4">
+                                <div class="flex justify-between items-center">
+                                    <span>5. Logic & Control Flow</span>
+                                    <i class="fa-solid fa-chevron-down transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Basic IF</td>
+                            <td class="px-4 py-3 font-mono text-xs">=IF(cond, true, false)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">CASE WHEN..THEN..END</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">np.where(cond, val, other)</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Multiple Conditions</td>
+                            <td class="px-4 py-3 font-mono text-xs">=IFS(c1, v1, c2, v2)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">CASE WHEN.. WHEN.. END</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">np.select([c1, c2], [v1, v2])</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">And / Or</td>
+                            <td class="px-4 py-3 font-mono text-xs">=AND(c1, c2)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">c1 AND c2</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">(c1) & (c2)</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Check Null</td>
+                            <td class="px-4 py-3 font-mono text-xs">=ISBLANK(cell)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">col IS NULL</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].isna()</td>
+                        </tr>
+                    </tbody>
+
+                    <!-- Joins & Combining -->
+                    <tbody class="divide-y divide-slate-700" x-data="{ open: false }">
+                        <tr class="cursor-pointer hover:opacity-90 transition-opacity" @click="open = !open">
+                            <td class="px-4 py-3 font-bold text-white bg-[#163832]" colspan="4">
+                                <div class="flex justify-between items-center">
+                                    <span>6. Joins & Combining</span>
+                                    <i class="fa-solid fa-chevron-down transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">VLOOKUP / Join</td>
+                            <td class="px-4 py-3 font-mono text-xs">=XLOOKUP(val, arr, ret)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">LEFT JOIN tbl ON..</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">pd.merge(df1, df2, on='id')</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Append Rows</td>
+                            <td class="px-4 py-3 font-mono text-xs">=VSTACK(rng1, rng2)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">UNION ALL</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">pd.concat([df1, df2])</td>
+                        </tr>
+                    </tbody>
+
+                    <!-- Advanced Analysis -->
+                    <tbody class="divide-y divide-slate-700" x-data="{ open: false }">
+                        <tr class="cursor-pointer hover:opacity-90 transition-opacity" @click="open = !open">
+                            <td class="px-4 py-3 font-bold text-white bg-[#163832]" colspan="4">
+                                <div class="flex justify-between items-center">
+                                    <span>7. Advanced Analysis</span>
+                                    <i class="fa-solid fa-chevron-down transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Rank Data</td>
+                            <td class="px-4 py-3 font-mono text-xs">=RANK.EQ(val, rng)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">RANK() OVER(ORDER BY..)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].rank()</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Row Number</td>
+                            <td class="px-4 py-3 font-mono text-xs">-</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">ROW_NUMBER() OVER()</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df.cumcount() + 1</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Previous Row</td>
+                            <td class="px-4 py-3 font-mono text-xs">-</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">LAG(col) OVER()</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].shift(1)</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Running Total</td>
+                            <td class="px-4 py-3 font-mono text-xs">Pivot: Show Values As...</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">SUM() OVER(ORDER BY..)</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df['col'].cumsum()</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Pivot / Reshape</td>
+                            <td class="px-4 py-3 font-mono text-xs">PivotTable</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">-</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df.pivot_table()</td>
+                        </tr>
+                        <tr x-show="open" x-transition>
+                            <td class="px-4 py-3 font-medium">Unpivot / Melt</td>
+                            <td class="px-4 py-3 font-mono text-xs">Power Query</td>
+                            <td class="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">-</td>
+                            <td class="px-4 py-3 font-mono text-xs text-yellow-600 dark:text-yellow-400">df.melt()</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- End of Day Workflow -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+        <div class="bg-[#051F20] text-white p-8 rounded-2xl shadow-2xl relative overflow-hidden" x-data="{ showDetails: false }">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-[#235347] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+            <div class="absolute -bottom-8 -left-8 w-64 h-64 bg-[#8EB69B] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+            
+            <div class="flex justify-between items-center mb-6 relative z-10">
+                <h2 class="text-2xl font-bold"><i class="fa-solid fa-moon text-[#8EB69B] mr-3"></i>The "End of Day" Ritual</h2>
+                <button @click="showDetails = !showDetails" class="text-xs font-bold px-3 py-1 rounded-full border border-slate-500 text-slate-300 hover:bg-slate-700 transition-colors">
+                    <i class="fa-solid fa-book-open mr-1"></i> <span x-text="showDetails ? 'Less Detail' : 'More Detail'"></span>
+                </button>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 relative z-10">
+                <div class="bg-[#163832]/50 p-4 rounded-xl border border-[#235347]">
+                    <h3 class="font-bold text-[#8EB69B] mb-2">1. Bus Factor Rule</h3>
+                    <p class="text-sm text-gray-300">Add comments! If you vanish, can someone else read your code?</p>
+                </div>
+                <div class="bg-[#163832]/50 p-4 rounded-xl border border-[#235347]">
+                    <h3 class="font-bold text-[#8EB69B] mb-2">2. ISO 8601 Naming</h3>
+                    <p class="text-sm text-gray-300">YYYY-MM-DD_FileName.xlsx. Sorts chronologically automatically.</p>
+                </div>
+                <div class="bg-[#163832]/50 p-4 rounded-xl border border-[#235347]">
+                    <h3 class="font-bold text-[#8EB69B] mb-2">3. 15-Min Shutdown</h3>
+                    <p class="text-sm text-gray-300">Commit code, clean desktop, write top 3 tasks for tomorrow.</p>
+                </div>
+            </div>
+
+            <!-- Detailed Project Cycle View -->
+            <div x-show="showDetails" x-collapse class="mt-8 pt-8 border-t border-slate-600 text-left relative z-10">
+                <h3 class="text-xl font-bold text-[#8EB69B] mb-4">The Vibe Coder Project Cycle (The Ultimate Practice Routine)</h3>
+                <p class="text-gray-300 mb-6">Do not just "practice." Build a legacy. Follow this 6-step cycle for every project.</p>
+                
+                <div class="space-y-8">
+                    <!-- Step 1 -->
+                    <div>
+                        <h4 class="font-bold text-white mb-2 text-lg">Step 1: SCOUT (Find the Dataset)</h4>
+                        <p class="text-sm text-gray-300 mb-2"><strong>Goal:</strong> Find data that mimics real-world business scenarios.</p>
+                        <ul class="list-disc list-inside text-sm text-gray-400 space-y-1 mb-3">
+                            <li><strong>Beginner:</strong> Kaggle ("Sales", "Retail", "HR").</li>
+                            <li><strong>Intermediate:</strong> Maven Analytics Data Playground.</li>
+                            <li><strong>Advanced:</strong> Government Portals (data.gov) - Messy & Realistic.</li>
+                        </ul>
+                        <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700 font-mono text-xs text-green-400">
+                            <i class="fa-solid fa-terminal mr-2"></i>AI Prompt: "I need a dataset to practice [Skill]. Suggest 3 specific dataset topics on Kaggle that are suitable for a Data Analyst portfolio."
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div>
+                        <h4 class="font-bold text-white mb-2 text-lg">Step 2: SCOPE (Define the Mission)</h4>
+                        <p class="text-sm text-gray-300 mb-2"><strong>Goal:</strong> Don't dive in blind. Define the "North Star" (Rule of 3).</p>
+                        <ul class="list-disc list-inside text-sm text-gray-400 space-y-1 mb-3">
+                            <li><strong>Descriptive:</strong> "What happened?" (e.g., Total Sales by Month).</li>
+                            <li><strong>Diagnostic:</strong> "Why did it happen?" (e.g., Which Region caused the sales drop?).</li>
+                            <li><strong>Prescriptive:</strong> "What should we do?" (e.g., Which products should we discount?).</li>
+                        </ul>
+                         <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700 font-mono text-xs text-green-400">
+                            <i class="fa-solid fa-terminal mr-2"></i>AI Prompt: "I have a dataset about [Topic]. Act as a Stakeholder and give me 3 difficult business questions to solve."
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div>
+                        <h4 class="font-bold text-white mb-2 text-lg">Step 3: SCRUB (The Clean-Up)</h4>
+                        <p class="text-sm text-gray-300 mb-2"><strong>Goal:</strong> Make the data analysis-ready. Document every change.</p>
+                        <ul class="list-disc list-inside text-sm text-gray-400 space-y-1 mb-3">
+                            <li><strong>Excel:</strong> Remove Duplicates, Fix Formatting, Fill Blanks.</li>
+                            <li><strong>SQL:</strong> UPPER(), TRIM(), COALESCE().</li>
+                            <li><strong>Doc:</strong> Create changelog.txt.</li>
+                        </ul>
+                         <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700 font-mono text-xs text-green-400">
+                            <i class="fa-solid fa-terminal mr-2"></i>AI Prompt: "I have a date column formatted as '01-Jan-2024'. Write a SQL query to convert this into standard 'YYYY-MM-DD' format."
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div>
+                        <h4 class="font-bold text-white mb-2 text-lg">Step 4: SOLVE (The Analysis)</h4>
+                        <p class="text-sm text-gray-300 mb-2"><strong>Goal:</strong> Answer the questions from Step 2.</p>
+                        <ul class="list-disc list-inside text-sm text-gray-400 space-y-1 mb-3">
+                            <li><strong>Excel:</strong> PivotTables, VLOOKUP.</li>
+                            <li><strong>SQL:</strong> GROUP BY, Window Functions.</li>
+                            <li><strong>Python:</strong> Pandas Feature Engineering.</li>
+                        </ul>
+                         <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700 font-mono text-xs text-green-400">
+                            <i class="fa-solid fa-terminal mr-2"></i>AI Prompt: "Write a SQL query to rank the top 5 salespeople per region using a Window Function."
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div>
+                        <h4 class="font-bold text-white mb-2 text-lg">Step 5: STORY (The Visualization)</h4>
+                        <p class="text-sm text-gray-300 mb-2"><strong>Goal:</strong> Build a dashboard that speaks for itself.</p>
+                        <ul class="list-disc list-inside text-sm text-gray-400 space-y-1 mb-3">
+                            <li><strong>Requirement:</strong> KPI Cards, Interactivity (Slicers), Consistent Colors.</li>
+                        </ul>
+                         <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700 font-mono text-xs text-green-400">
+                            <i class="fa-solid fa-terminal mr-2"></i>AI Prompt: "Suggest a color palette (Hex codes) for a financial dashboard that looks modern and professional."
+                        </div>
+                    </div>
+
+                    <!-- Step 6 -->
+                    <div>
+                        <h4 class="font-bold text-white mb-2 text-lg">Step 6: SHARE (The "Flex")</h4>
+                        <p class="text-sm text-gray-300 mb-2"><strong>Goal:</strong> If you don't publish it, it didn't happen.</p>
+                        <ul class="list-disc list-inside text-sm text-gray-400 space-y-1 mb-3">
+                            <li><strong>GitHub:</strong> Upload SQL/Python + README.md.</li>
+                            <li><strong>LinkedIn:</strong> Hook + Process + Visual + CTA.</li>
+                        </ul>
+                         <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700 font-mono text-xs text-green-400">
+                            <i class="fa-solid fa-terminal mr-2"></i>AI Prompt: "Draft a LinkedIn post for this project. The key finding was that mobile users churn 20% faster than desktop users. Keep it engaging."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-700 py-12 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-6">The "Vibe Coder" Project Cycle</h2>
+            <div class="relative inline-block" x-data="{ showChecklist: false }" @mouseenter="showChecklist = true" @mouseleave="showChecklist = false">
+                <div class="flex flex-wrap justify-center gap-4 mb-8 cursor-help">
+                    <span class="px-4 py-2 rounded-full bg-gray-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm hover:bg-[#E8F3EA] dark:hover:bg-slate-700 transition-colors">1. Scout</span>
+                    <i class="fa-solid fa-arrow-right text-gray-300 dark:text-slate-600 self-center"></i>
+                    <span class="px-4 py-2 rounded-full bg-gray-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm hover:bg-[#E8F3EA] dark:hover:bg-slate-700 transition-colors">2. Scope</span>
+                    <i class="fa-solid fa-arrow-right text-gray-300 dark:text-slate-600 self-center"></i>
+                    <span class="px-4 py-2 rounded-full bg-gray-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm hover:bg-[#E8F3EA] dark:hover:bg-slate-700 transition-colors">3. Scrub</span>
+                    <i class="fa-solid fa-arrow-right text-gray-300 dark:text-slate-600 self-center"></i>
+                    <span class="px-4 py-2 rounded-full bg-gray-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm hover:bg-[#E8F3EA] dark:hover:bg-slate-700 transition-colors">4. Solve</span>
+                    <i class="fa-solid fa-arrow-right text-gray-300 dark:text-slate-600 self-center"></i>
+                    <span class="px-4 py-2 rounded-full bg-gray-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm hover:bg-[#E8F3EA] dark:hover:bg-slate-700 transition-colors">5. Story</span>
+                    <i class="fa-solid fa-arrow-right text-gray-300 dark:text-slate-600 self-center"></i>
+                    <span class="px-4 py-2 rounded-full bg-[#E8F3EA] dark:bg-pink-900/30 text-[#235347] dark:text-pink-400 font-semibold text-sm">6. Share</span>
+                </div>
+
+                <!-- Hover Checklist -->
+                <div x-show="showChecklist" 
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 translate-y-2"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100 translate-y-0"
+                     x-transition:leave-end="opacity-0 translate-y-2"
+                     class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-100 p-5 text-left z-50">
+                    <h4 class="font-bold text-slate-800 mb-4 text-center border-b border-gray-100 pb-2">Project Checklist</h4>
+                    <ul class="space-y-3 text-xs text-slate-600">
+                        <li class="flex items-center justify-between group">
+                            <span class="font-medium group-hover:text-[#235347] transition-colors">1. Scout: Downloaded dataset</span> 
+                            <i class="fa-regular fa-square text-gray-300"></i>
+                        </li>
+                        <li class="flex items-center justify-between group">
+                            <span class="font-medium group-hover:text-[#235347] transition-colors">2. Scope: Defined 3 questions</span> 
+                            <i class="fa-regular fa-square text-gray-300"></i>
+                        </li>
+                        <li class="flex items-center justify-between group">
+                            <span class="font-medium group-hover:text-[#235347] transition-colors">3. Scrub: Cleaned & Documented</span> 
+                            <i class="fa-regular fa-square text-gray-300"></i>
+                        </li>
+                        <li class="flex items-center justify-between group">
+                            <span class="font-medium group-hover:text-[#235347] transition-colors">4. Solve: Calculated answers</span> 
+                            <i class="fa-regular fa-square text-gray-300"></i>
+                        </li>
+                        <li class="flex items-center justify-between group">
+                            <span class="font-medium group-hover:text-[#235347] transition-colors">5. Story: Built Dashboard</span> 
+                            <i class="fa-regular fa-square text-gray-300"></i>
+                        </li>
+                        <li class="flex items-center justify-between group">
+                            <span class="font-medium group-hover:text-[#235347] transition-colors">6. Share: GitHub + LinkedIn</span> 
+                            <i class="fa-regular fa-square text-gray-300"></i>
+                        </li>
+                    </ul>
+                    <div class="absolute bottom-[-6px] left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white rotate-45 border-b border-r border-gray-100"></div>
+                </div>
+            </div>
+            <p class="text-slate-400 text-sm">© 2025 Data Analyst Master Guide. Built with <i class="fa-solid fa-heart text-[#235347]"></i> & Alpine.js.</p>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div x-show="toast.visible" x-transition.opacity.duration.500ms class="fixed bottom-8 right-8 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-2xl flex items-center gap-3 z-50">
+        <i class="fa-solid fa-check-circle text-green-400"></i>
+        <span x-text="toast.message"></span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+:root {
+    /* Green Theme Palette */
+    --col-darkest: #051F20;
+    --col-dark: #0B2B26;
+    --col-medium-dark: #163832;
+    --col-medium: #235347;
+    --col-light: #8EB69B;
+    --col-lightest: #E8F3EA; /* Inferred lightest shade */
+
+    --sakura-color: var(--col-light);
+    --text-main: var(--col-darkest);
+    --text-muted: var(--col-medium-dark);
+    
+    /* Mapping to previous variables for compatibility or replacement */
+    --theme-bg: var(--col-lightest);
+    --theme-surface: #ffffff;
+    --theme-border: var(--col-light);
+    --theme-accent: var(--col-medium);
+}
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--theme-bg);
+    background-image: radial-gradient(var(--col-light) 1px, transparent 1px);
+    background-size: 24px 24px;
+    color: var(--text-main);
+    overflow-x: hidden;
+}
+
+.dark body {
+    background-color: #000000;
+    background-image: none;
+    color: #ffffff;
+}
+.font-mono {
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Glassmorphism - Green Theme */
+.glass {
+    background: rgba(232, 243, 234, 0.75); /* col-lightest with opacity */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--col-light);
+    box-shadow: 0 8px 32px 0 rgba(11, 43, 38, 0.1); /* col-dark shadow */
+    border-radius: 1.5rem;
+}
+
+.glass-panel {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--col-light);
+    border-radius: 1rem;
+}
+
+/* Dark mode overrides for glass */
+.dark .glass {
+    border-color: rgba(100, 100, 100, 0.3);
+}
+
+.dark .glass-panel {
+    border-color: rgba(100, 100, 100, 0.25);
+}
+
+/* Sakura Animation */
+.sakura-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+.petal {
+    position: absolute;
+    background-color: var(--sakura-color);
+    border-radius: 150% 0 150% 0;
+    animation: fall linear infinite;
+    opacity: 0.8;
+}
+@keyframes fall {
+    0% { transform: translate(0, -10vh) rotate(0deg) skewX(0deg); opacity: 0; }
+    20% { opacity: 1; }
+    100% { transform: translate(10vw, 110vh) rotate(360deg) skewX(20deg); opacity: 0; }
+}
+
+/* Timeline Line */
+.timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--col-light);
+    border-radius: 4px;
+    transform: translateX(-50%);
+    z-index: -1;
+    background-image: linear-gradient(to bottom, var(--col-medium), var(--col-light));
+}
+@media (max-width: 768px) {
+    .timeline-line {
+        display: none;
+    }
+}
+
+/* Scrollbar - Brown Theme */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--col-lightest); }
+::-webkit-scrollbar-thumb { background: var(--col-light); border-radius: 10px; border: 2px solid var(--col-lightest); }
+::-webkit-scrollbar-thumb:hover { background: var(--col-medium); }
+
+[x-cloak] { display: none !important; }
+
+/* Interactive Classes */
+.hover-bounce:hover {
+    transform: translateY(-4px) scale(1.02);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.click-squish:active {
+    transform: scale(0.95);
+}
+
+/* Custom Gradients for Text */
+.text-gradient-pop {
+    background: linear-gradient(to right, var(--col-dark), var(--col-medium), var(--col-light));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
