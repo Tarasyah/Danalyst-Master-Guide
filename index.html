@@ -100,7 +100,7 @@
         <div class="inline-block mb-4 px-4 py-1 rounded-full bg-[#E8F3EA] text-[#235347] text-sm font-semibold tracking-wide uppercase">
             The Ultimate Guide
         </div>
-        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6">
+        <h1 class="text-3xl md:text-7xl font-extrabold tracking-tight mb-6">
             <span class="block text-[#051F20] dark:text-white">Data Analyst</span>
             <span class="block text-transparent bg-clip-text bg-gradient-to-r from-[#0B2B26] via-[#235347] to-[#8EB69B]">Master Guide</span>
         </h1>
@@ -121,7 +121,7 @@
         <section id="phase-1" x-show="matchesSearch('phase 1 business understanding planning')" class="relative transition-all duration-500">
             <div class="flex flex-col items-center mb-8 relative z-10">
                 <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#235347] to-[#8EB69B] text-white flex items-center justify-center text-2xl font-bold shadow-lg border-4 border-white">1</div>
-                <h2 class="mt-4 text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Business Understanding</h2>
+                <h2 class="mt-4 text-xl md:text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Business Understanding</h2>
             </div>
 
             <div class="glass dark:bg-slate-800/50 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden border border-white/50" 
@@ -374,7 +374,7 @@
         <section id="phase-2" x-show="matchesSearch('phase 2 data sourcing collection')" class="relative transition-all duration-500">
             <div class="flex flex-col items-center mb-8 relative z-10">
                 <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#163832] to-[#235347] text-white flex items-center justify-center text-2xl font-bold shadow-lg border-4 border-white">2</div>
-                <h2 class="mt-4 text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Data Sourcing</h2>
+                <h2 class="mt-4 text-xl md:text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Data Sourcing</h2>
             </div>
 
             <div class="glass dark:bg-slate-800/50 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden border border-white/50" 
@@ -520,7 +520,7 @@
         <section id="phase-3" x-show="matchesSearch('phase 3 data cleaning excel sql')" class="relative transition-all duration-500">
             <div class="flex flex-col items-center mb-8 relative z-10">
                 <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#0B2B26] to-[#163832] text-white flex items-center justify-center text-2xl font-bold shadow-lg border-4 border-white">3</div>
-                <h2 class="mt-4 text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Data Cleaning</h2>
+                <h2 class="mt-4 text-xl md:text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Data Cleaning</h2>
             </div>
 
             <div class="glass dark:bg-slate-800/50 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden border border-white/50 hover-bounce transition-all duration-300" 
@@ -572,63 +572,63 @@
                                     </div>
                                     
                                     <!-- Excel Steps with Dropdowns -->
-                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
-                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200 p-4 text-sm text-slate-600 dark:text-slate-300">
                                             <span class="text-[#8EB69B] font-bold mr-2">1.</span><strong>Save & Setup:</strong> Save Copy → Select All (Ctrl+A) → Auto-fit → Table (Ctrl+T).
                                         </div>
-                                    </div>
-
-                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
-                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200 p-4 text-sm text-slate-600 dark:text-slate-300">
                                             <span class="text-[#8EB69B] font-bold mr-2">2.</span><strong>Clean Text:</strong> Remove Parentheses via Find & Replace <code class="bg-slate-800 text-green-400 px-1 rounded">(*)</code>.
                                         </div>
-                                    </div>
-
-                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
-                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200 p-4 text-sm text-slate-600 dark:text-slate-300">
                                             <span class="text-[#8EB69B] font-bold mr-2">3.</span><strong>Standardize Case:</strong> <code class="bg-slate-800 text-blue-400 px-2 py-1 rounded">=LOWER(C2)</code> to fix capitalization.
                                         </div>
-                                    </div>
-
-                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
-                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200 p-4 text-sm text-slate-600 dark:text-slate-300">
                                             <span class="text-[#8EB69B] font-bold mr-2">4.</span><strong>Clean Names:</strong> <code class="bg-slate-800 text-purple-400 px-2 py-1 rounded">=PROPER(TRIM(D2))</code> for names.
                                         </div>
-                                    </div>
-
-                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
-                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200 p-4 text-sm text-slate-600 dark:text-slate-300">
                                             <span class="text-[#8EB69B] font-bold mr-2">5.</span><strong>Split Columns:</strong> Data Tab → Text to Columns (Delimited).
                                         </div>
-                                    </div>
-
-                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
-                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200 p-4 text-sm text-slate-600 dark:text-slate-300">
                                             <span class="text-[#8EB69B] font-bold mr-2">6.</span><strong>Remove Duplicates:</strong> Data Tab → Remove Duplicates.
                                         </div>
-                                    </div>
-
-                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
-                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200 p-4 text-sm text-slate-600 dark:text-slate-300">
                                             <span class="text-[#8EB69B] font-bold mr-2">7.</span><strong>Fill Blanks:</strong> Ctrl+G (Go To) → Special → Blanks → Type "NA" → Ctrl+Enter.
                                         </div>
-                                    </div>
-
-                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
-                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200 p-4 text-sm text-slate-600 dark:text-slate-300">
                                             <span class="text-[#8EB69B] font-bold mr-2">8.</span><strong>Handle Errors:</strong> <code class="bg-slate-800 text-yellow-400 px-2 py-1 rounded">=IFERROR(VLOOKUP(...), "Not Found")</code>.
                                         </div>
-                                    </div>
-
-                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
-                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200 p-4 text-sm text-slate-600 dark:text-slate-300">
                                             <span class="text-[#8EB69B] font-bold mr-2">9.</span><strong>Format Headers:</strong> Bold, Dark Blue Background, White Text.
                                         </div>
-                                    </div>
-
-                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200">
-                                        <div class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 rounded-lg border border-slate-200 p-4 text-sm text-slate-600 dark:text-slate-300">
                                             <span class="text-[#8EB69B] font-bold mr-2">10.</span><strong>Final Polish:</strong> View Tab → Uncheck Gridlines.
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Advanced Excel Section -->
+                                    <div class="mt-8 pt-6 border-t border-gray-200 dark:border-slate-700">
+                                        <h4 class="font-bold text-slate-800 dark:text-white mb-4 pb-2">🚀 Advanced Excel Cleaning</h4>
+                                        <div class="grid md:grid-cols-2 gap-4">
+                                            <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
+                                                <strong class="text-slate-800 dark:text-white text-sm"><i class="fa-solid fa-calendar-check text-orange-500 mr-2"></i>Date Repair</strong>
+                                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 mb-2">Fix text dates like "2023.12.01"</p>
+                                                <code class="bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded text-xs font-mono text-orange-600 dark:text-orange-400 block">=DATEVALUE(SUBSTITUTE(A2,".","/"))</code>
+                                            </div>
+                                            <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
+                                                <strong class="text-slate-800 dark:text-white text-sm"><i class="fa-solid fa-magnifying-glass-location text-orange-500 mr-2"></i>Master Lookup</strong>
+                                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 mb-2">Standardize categories from a master list.</p>
+                                                <code class="bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded text-xs font-mono text-orange-600 dark:text-orange-400 block">=XLOOKUP(A2, MasterList[Bad], MasterList[Good])</code>
+                                            </div>
+                                            <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
+                                                <strong class="text-slate-800 dark:text-white text-sm"><i class="fa-solid fa-scissors text-orange-500 mr-2"></i>Advanced Text</strong>
+                                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 mb-2">Extract text before a symbol.</p>
+                                                <code class="bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded text-xs font-mono text-orange-600 dark:text-orange-400 block">=TEXTBEFORE(A2, "@")</code>
+                                            </div>
+                                            <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
+                                                <strong class="text-slate-800 dark:text-white text-sm"><i class="fa-solid fa-traffic-light text-orange-500 mr-2"></i>Data Validation</strong>
+                                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 mb-2">Prevent bad data entry.</p>
+                                                <span class="text-xs text-slate-500">Data Tab → Data Validation → Allow: List</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -636,44 +636,133 @@
 
                             <!-- SQL Tab Content -->
                             <div x-show="toolTab === 'sql'">
-                                <div class="bg-[#E8F3EA] dark:bg-blue-900/10 p-4 rounded-lg border-l-4 border-[#235347] mb-4">
+                                <div class="bg-[#E8F3EA] dark:bg-blue-900/10 p-4 rounded-lg border-l-4 border-[#235347] mb-6">
                                     <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold"><i class="fa-solid fa-database text-[#235347] mr-2"></i>Large Data Strategy (> 1M Rows)</p>
                                 </div>
-                                <div class="space-y-4">
-                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
-                                        <strong class="text-slate-700 dark:text-slate-200 block mb-2">1. Remove Duplicates (Safe Way)</strong>
-                                        <div class="bg-slate-800 text-green-400 p-3 rounded-lg font-mono text-xs shadow-inner">CREATE TABLE clean AS SELECT DISTINCT * FROM original;</div>
+                                
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <!-- Basic Cleaning -->
+                                    <div class="space-y-4">
+                                        <h4 class="font-bold text-slate-800 dark:text-white border-b border-gray-200 dark:border-slate-700 pb-2">1. Essentials</h4>
+                                        
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
+                                            <strong class="text-slate-700 dark:text-slate-200 block mb-1 text-sm">Remove Duplicates (Safe)</strong>
+                                            <div class="bg-slate-800 text-green-400 p-2 rounded-md font-mono text-xs shadow-inner">
+                                                CREATE TABLE clean AS <br>SELECT DISTINCT * FROM original;
+                                            </div>
+                                        </div>
+
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
+                                            <strong class="text-slate-700 dark:text-slate-200 block mb-1 text-sm">Handle Nulls</strong>
+                                            <div class="bg-slate-800 text-blue-400 p-2 rounded-md font-mono text-xs shadow-inner">
+                                                UPDATE clean <br>SET col = 'Unknown' WHERE col IS NULL;
+                                            </div>
+                                        </div>
+
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
+                                            <strong class="text-slate-700 dark:text-slate-200 block mb-1 text-sm">Standardize Case</strong>
+                                            <div class="bg-slate-800 text-purple-400 p-2 rounded-md font-mono text-xs shadow-inner">
+                                                UPDATE clean <br>SET col = UPPER(TRIM(col));
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
-                                        <strong class="text-slate-700 dark:text-slate-200 block mb-2">2. Handle Nulls</strong>
-                                        <div class="bg-slate-800 text-blue-400 p-3 rounded-lg font-mono text-xs shadow-inner">UPDATE clean SET col = 'Default' WHERE col IS NULL;</div>
+
+                                    <!-- Advanced Cleaning -->
+                                    <div class="space-y-4">
+                                        <h4 class="font-bold text-slate-800 dark:text-white border-b border-gray-200 dark:border-slate-700 pb-2">2. Advanced Transformations</h4>
+
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
+                                            <strong class="text-slate-700 dark:text-slate-200 block mb-1 text-sm">Fix Data Types</strong>
+                                            <div class="bg-slate-800 text-yellow-400 p-2 rounded-md font-mono text-xs shadow-inner">
+                                                ALTER TABLE clean <br>MODIFY COLUMN price DECIMAL(10,2);
+                                            </div>
+                                        </div>
+
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
+                                            <strong class="text-slate-700 dark:text-slate-200 block mb-1 text-sm">Conditional Logic</strong>
+                                            <div class="bg-slate-800 text-pink-400 p-2 rounded-md font-mono text-xs shadow-inner">
+                                                SELECT name, <br>CASE WHEN age < 18 THEN 'Minor' <br>ELSE 'Adult' END as status <br>FROM users;
+                                            </div>
+                                        </div>
+
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
+                                            <strong class="text-slate-700 dark:text-slate-200 block mb-1 text-sm">String Replacement</strong>
+                                            <div class="bg-slate-800 text-cyan-400 p-2 rounded-md font-mono text-xs shadow-inner">
+                                                UPDATE clean <br>SET phone = REPLACE(phone, '-', '');
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-5 rounded-lg border border-slate-200">
-                                        <strong class="text-slate-700 dark:text-slate-200 block mb-2">3. Standardize Case</strong>
-                                        <div class="bg-slate-800 text-purple-400 p-3 rounded-lg font-mono text-xs shadow-inner">UPDATE clean SET col = UPPER(col);</div>
+                                </div>
+                                
+                                <!-- Validation Section -->
+                                <div class="mt-6 glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
+                                    <h4 class="font-bold text-slate-800 dark:text-white mb-2 text-sm"><i class="fa-solid fa-shield-halved text-red-500 mr-2"></i>Quality Assurance Checks</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono text-slate-600 dark:text-slate-400">
+                                        <div class="bg-slate-100 dark:bg-slate-900 p-2 rounded border border-slate-200 dark:border-slate-700">
+                                            <span class="text-red-500 font-bold">Invalid Emails:</span><br>
+                                            WHERE email NOT LIKE '%@%'
+                                        </div>
+                                        <div class="bg-slate-100 dark:bg-slate-900 p-2 rounded border border-slate-200 dark:border-slate-700">
+                                            <span class="text-red-500 font-bold">Negative Prices:</span><br>
+                                            WHERE price < 0
+                                        </div>
+                                        <div class="bg-slate-100 dark:bg-slate-900 p-2 rounded border border-slate-200 dark:border-slate-700">
+                                            <span class="text-red-500 font-bold">Future Dates:</span><br>
+                                            WHERE order_date > CURRENT_DATE
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Google Sheets Tab Content -->
                             <div x-show="toolTab === 'sheets'">
-                                <div class="bg-[#E8F3EA] dark:bg-green-900/10 p-4 rounded-lg border-l-4 border-[#235347] mb-4">
+                                <div class="bg-[#E8F3EA] dark:bg-green-900/10 p-4 rounded-lg border-l-4 border-[#235347] mb-6">
                                     <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold"><i class="fa-solid fa-cloud text-[#235347] mr-2"></i>Cloud Smart Features</p>
                                 </div>
-                                <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                                    <li class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
-                                        <i class="fa-solid fa-check-circle text-[#235347] mr-2"></i><strong>Trim Whitespace:</strong> Data → Data cleanup → Trim whitespace.
-                                    </li>
-                                    <li class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
-                                        <i class="fa-solid fa-check-circle text-[#235347] mr-2"></i><strong>Remove Duplicates:</strong> Data → Data cleanup → Remove duplicates.
-                                    </li>
-                                    <li class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
-                                        <i class="fa-solid fa-check-circle text-[#235347] mr-2"></i><strong>Cleanup Suggestions:</strong> AI-powered error scanning.
-                                    </li>
-                                    <li class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-4 rounded-lg border border-slate-200">
-                                        <i class="fa-solid fa-check-circle text-[#235347] mr-2"></i><strong>Split Text:</strong> Auto-detects separators.
-                                    </li>
-                                </ul>
+                                
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <!-- Native Features -->
+                                    <div class="space-y-3">
+                                        <h4 class="font-bold text-slate-800 dark:text-white border-b border-gray-200 dark:border-slate-700 pb-2">1. Built-in Tools</h4>
+                                        <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                                            <li class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-3 rounded-lg border border-slate-200 flex items-start">
+                                                <i class="fa-solid fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                                <div><strong>Trim Whitespace:</strong><br><span class="text-xs">Data → Data cleanup → Trim whitespace</span></div>
+                                            </li>
+                                            <li class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-3 rounded-lg border border-slate-200 flex items-start">
+                                                <i class="fa-solid fa-clone text-green-500 mt-1 mr-2"></i>
+                                                <div><strong>Remove Duplicates:</strong><br><span class="text-xs">Data → Data cleanup → Remove duplicates</span></div>
+                                            </li>
+                                            <li class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-3 rounded-lg border border-slate-200 flex items-start">
+                                                <i class="fa-solid fa-wand-magic-sparkles text-green-500 mt-1 mr-2"></i>
+                                                <div><strong>Cleanup Suggestions:</strong><br><span class="text-xs">AI-powered error scanning</span></div>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Formulas -->
+                                    <div class="space-y-3">
+                                        <h4 class="font-bold text-slate-800 dark:text-white border-b border-gray-200 dark:border-slate-700 pb-2">2. Power Formulas</h4>
+                                        
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-3 rounded-lg border border-slate-200">
+                                            <strong class="text-slate-800 dark:text-white text-sm block mb-1">Regex Extraction</strong>
+                                            <code class="bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded text-xs font-mono text-green-600 dark:text-green-400 block">=REGEXEXTRACT(A2, "[0-9]+")</code>
+                                            <span class="text-xs text-slate-500">Extracts numbers from text.</span>
+                                        </div>
+
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-3 rounded-lg border border-slate-200">
+                                            <strong class="text-slate-800 dark:text-white text-sm block mb-1">Regex Replacement</strong>
+                                            <code class="bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded text-xs font-mono text-green-600 dark:text-green-400 block">=REGEXREPLACE(A2, "[^a-zA-Z]", "")</code>
+                                            <span class="text-xs text-slate-500">Removes everything except letters.</span>
+                                        </div>
+
+                                        <div class="glass-panel dark:bg-slate-800/50 dark:border-slate-700 p-3 rounded-lg border border-slate-200">
+                                            <strong class="text-slate-800 dark:text-white text-sm block mb-1">Google Translate</strong>
+                                            <code class="bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded text-xs font-mono text-green-600 dark:text-green-400 block">=GOOGLETRANSLATE(A2, "id", "en")</code>
+                                            <span class="text-xs text-slate-500">Auto-translate comments.</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -732,7 +821,7 @@
         <section id="phase-4" x-show="matchesSearch('phase 4 eda exploratory analysis')" class="relative transition-all duration-500">
             <div class="flex flex-col items-center mb-8 relative z-10">
                 <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#235347] to-[#8EB69B] text-white flex items-center justify-center text-2xl font-bold shadow-lg border-4 border-white">4</div>
-                <h2 class="mt-4 text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Exploratory Data Analysis</h2>
+                <h2 class="mt-4 text-xl md:text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Exploratory Data Analysis</h2>
             </div>
 
             <div class="glass dark:bg-slate-800/50 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden border border-white/50" 
@@ -933,7 +1022,7 @@
         <section id="phase-5" x-show="matchesSearch('phase 5 visualization dashboard')" class="relative transition-all duration-500">
             <div class="flex flex-col items-center mb-8 relative z-10">
                 <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#163832] to-[#235347] text-white flex items-center justify-center text-2xl font-bold shadow-lg border-4 border-white">5</div>
-                <h2 class="mt-4 text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Visualization & Dashboarding</h2>
+                <h2 class="mt-4 text-xl md:text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Visualization & Dashboarding</h2>
             </div>
 
             <div class="glass dark:bg-slate-800/50 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden border border-white/50 hover-bounce transition-all duration-300" 
@@ -1094,7 +1183,7 @@
         <section id="phase-6" x-show="matchesSearch('phase 6 reporting portfolio')" class="relative transition-all duration-500">
             <div class="flex flex-col items-center mb-8 relative z-10">
                 <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#0B2B26] to-[#163832] text-white flex items-center justify-center text-2xl font-bold shadow-lg border-4 border-white">6</div>
-                <h2 class="mt-4 text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Reporting & Portfolio</h2>
+                <h2 class="mt-4 text-xl md:text-3xl font-bold text-[#051F20] dark:text-white bg-[#E8F3EA] dark:bg-slate-800 px-4 rounded-lg">Reporting & Portfolio</h2>
             </div>
 
             <div class="glass dark:bg-slate-800/50 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden border border-white/50 hover-bounce transition-all duration-300" 
